@@ -87,7 +87,7 @@
                 <nav class="navigation">
                     <ul>
                         <li class=""><a href="index.html" title="Dashboard"><span class="nav-icon material-icons">public</span> Home </a></li>
-                        <li class="active"><a href="SGMerchandiseImportExport.html"><span class="nav-icon material-icons "> card_travel </span> SG Trades </a></li>
+                        <li class="active"><a href="SGImportExport.html"><span class="nav-icon material-icons "> card_travel </span> SG Trades </a></li>
                         <li class=""><a href="ASEANTrades.html"><span class="nav-icon material-icons ">score</span> ASEAN Trades </a></li>
                         <li class=""><a href="SGTrade.html"><span class="nav-icon material-icons ">score</span> SG Trade </a></li>
                     </ul>
@@ -112,14 +112,14 @@
                 </header>
 
                 <div class="content-wrapper">
-
-                    <div class="row page-tilte align-items-center">
-                        <div class="col-md-12">
-                            <a href="#" class="mt-3 d-md-none float-right toggle-controls"><span class="material-icons">keyboard_arrow_down</span></a>
-                            <h1 class="weight-300 h3 title"> Sunburst Chart</h1>
-                            <div class="form-group row">
+                    <div class="row">
+                        <div class='col-sm-3'>
+                            <h1 class="weight-300 h3 title"> SG Trade </h1>
+                        </div>
+                        <div class='col-sm-9'>
+                            <div class='row'>
                                 <label class="label-control col-sm-1"> Chart by: </label>
-                                <select class="form-control col-sm-2" id="chartSelection">
+                                <select class="form-control col-sm-2" id="yearSelection">
                                     <option> Select a value </option>
                                     <option value="2013"> 2013 </option>
                                     <option value="2014"> 2014 </option>
@@ -127,11 +127,14 @@
                                     <option value="2016"> 2016 </option>
                                     <option value="2017"> 2017 </option>
                                 </select>
-                            </div>
-                        </div> 
-                        <div class="col controls-wrapper mt-3 mt-md-0 d-none d-md-block ">
-                            <div class="controls d-flex justify-content-center justify-content-md-end">
-
+                                <label class="label-control col-sm-1"> Type: </label>
+                                <select class="form-control col-sm-2" id="typeSelection">
+                                    <option> Select a value </option>
+                                    <option value="merchandise"> Merchandise </option>
+                                    <option value="service"> Service </option>
+                                </select>
+                                <div class="col-sm-1"></div>
+                                <button class='btn mb-2 circle btn-outline-primary' onclick='loadChart()'> Submit </button>
                             </div>
                         </div>
                     </div> 
@@ -139,13 +142,13 @@
                     <div class="content">
                         <div class="row">
                             <div class="col-sm-9">
+                                <div id="sequence"></div>
                                 <div id="chart">
                                     <div id="explanation" style="visibility: hidden;">
                                         <span id="percentage"></span><br/>
                                         of Merchandise Import to / Export from Singapore
                                     </div>
                                 </div>
-                                <div id="sequence"></div>
                             </div>
                             <!-- 
                             <div class="col-sm-3">
@@ -153,6 +156,27 @@
                                 <div id="legend" style="visibility: hidden;"></div>
                             </div>
                             -->
+                            <div class="card col-sm-3 h-100">
+                                <div class='card-header'> Trade Details </div>
+                                <div class='card-body'>
+                                    <div class='row'>
+                                        <label> Type of Trade: &nbsp;</label>
+                                        <div id='printTypeOfTrade'>  </div>
+                                    </div>
+                                    <div class='row'>
+                                        <label> Import / Export: &nbsp;</label>
+                                        <div id='printImportExport'>  </div>
+                                    </div>
+                                    <div class='row'>
+                                        <label> Traded Item: &nbsp;</label>
+                                        <div id='printTradedItem'>  </div>
+                                    </div>
+                                    <div class='row'>
+                                        <label> Values: &nbsp;</label>
+                                        <div id='printValues'>  </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -227,8 +251,8 @@
         <script src="assets/js/lib/popper.min.js"></script>
         <script src="assets/js/bootstrap/bootstrap.min.js"></script>
         <script src="assets/js/chosen-js/chosen.jquery.js"></script>
-        <script src="assets/js/custom.js"></script>
-
+        <script src="assets/js/custom.js">
+        </script>
         <script>
             function getRandomColor() {
                 var letters = '0123456789ABCDEF';
@@ -246,7 +270,7 @@
 
             // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
             var b = {
-                w: 300, h: 30, s: 3, t: 10
+                w: 200, h: 25, s: 3, t: 10
             };
 
             // Mapping of step names to colors.
@@ -255,6 +279,9 @@
 
             // Total size of all segments; we set this later, after loading the data.
             var totalSize = 0;
+            var firstDepth = "";
+            var secondDepth = "";
+            var thirdDepth = "";
 
             var vis = d3.select("#chart").append("svg:svg")
                     .attr("width", width)
@@ -280,27 +307,51 @@
                         return Math.sqrt(d.y1);
                     });
 
-            // Use d3.text and d3.csvParseRows so that we do not need to have a header
-            // row, and can receive the csv as an array of arrays.
-            d3.text("data/processedMerchandiseSequence2013.csv", function (text) {
-                var csv = d3.csvParseRows(text);
-
-                for (i = 0; i < csv.length; i++) {
-                    merchandise = csv[i][0].split("-")[2]
-                    colors[merchandise] = getRandomColor()
+            function loadChart() {
+                totalSize = 0
+                year = document.getElementById("yearSelection").value
+                type = document.getElementById("typeSelection").value
+                if (type === "merchandise") {
+                    // Use d3.text and d3.csvParseRows so that we do not need to have a header
+                    // row, and can receive the csv as an array of arrays.
+                    d3.text("data/processedMerchandiseSequence" + year + ".csv", function (text) {
+                        var csv = d3.csvParseRows(text);
+                        colors = []
+                        for (i = 0; i < csv.length; i++) {
+                            merchandise = csv[i][0].split("-")[2]
+                            colors[merchandise] = getRandomColor()
+                        }
+                        colors["merchandise"] = getRandomColor()
+                        colors["import"] = getRandomColor()
+                        colors["export"] = getRandomColor()
+                        var json = buildHierarchy(csv);
+                        createVisualization(json);
+                    });
+                } else {
+                    // Use d3.text and d3.csvParseRows so that we do not need to have a header
+                    // row, and can receive the csv as an array of arrays.
+                    d3.text("data/processedSequence" + year + ".csv", function (text) {
+                        var csv = d3.csvParseRows(text);
+                        colors = []
+                        for (i = 0; i < csv.length; i++) {
+                            service = csv[i][0].split("-")[2]
+                            colors[service] = getRandomColor()
+                        }
+                        colors["service"] = getRandomColor()
+                        colors["import"] = getRandomColor()
+                        colors["export"] = getRandomColor()
+                        var json = buildHierarchy(csv);
+                        createVisualization(json);
+                    });
                 }
-                colors["merchandise"] = getRandomColor()
-                colors["import"] = getRandomColor()
-                colors["export"] = getRandomColor()
-                var json = buildHierarchy(csv);
-                createVisualization(json);
-            });
+            }
 
             // Main function to draw and set up the visualization, once we have the data.
             function createVisualization(json) {
                 // Basic setup of page elements.
                 initializeBreadcrumbTrail();
                 drawLegend();
+                document.getElementById("container").innerHTML = "";
                 d3.select("#togglelegend").on("click", toggleLegend);
 
                 // Bounding circle underneath the sunburst, to make it easier to detect
@@ -348,13 +399,35 @@
 
             // Fade all but the current sequence, and show it in the breadcrumb trail.
             function mouseover(d) {
-
                 var percentage = (100 * d.value / totalSize).toPrecision(3);
                 var percentageString = percentage + "%";
                 if (percentage < 0.1) {
                     percentageString = "< 0.1%";
                 }
 
+                htmlCodes = "<span id='percentage'></span><br/> of " + firstDepth + " Import to / Export from Singapore"
+                if (d.depth === 1) {
+                    firstDepth = d.data["name"]
+                    secondDepth = ""
+                    thirdDepth = ""
+                    document.getElementById("printTypeOfTrade").innerText = d.data["name"]
+                    document.getElementById("explanation").innerHTML = "<span id='percentage'></span><br/> is made up of <b>" + firstDepth + "</b>"
+                } else if (d.depth === 2) {
+                    secondDepth = d.data["name"]
+                    thirdDepth = ""
+                    document.getElementById("printImportExport").innerText = d.data["name"]
+                    document.getElementById("explanation").innerHTML = "<span id='percentage'></span><br/> of <b>" + firstDepth + "</b> is made up of <b>" + secondDepth + "</b>"
+                } else if (d.depth === 3) {
+                    if (d.data["name"].length > 20) {
+                        thirdDepth = d.data["name"].substring(0, 20) + "..."
+                    } else {
+                        thirdDepth = d.data["name"]
+                    }
+                    document.getElementById("explanation").innerHTML = "<span id='percentage'></span><br/> of <b>" + firstDepth + "</b> > <b>" + secondDepth + "</b> is made up of <b>" + thirdDepth + "</b>"
+                    document.getElementById("printTradedItem").innerText = d.data["name"]
+                }
+
+                document.getElementById("printValues").innerText = "SGD$ " + d.value.toLocaleString(undefined, {minimumFractionDigits: 2});
                 d3.select("#percentage")
                         .text(percentageString);
 
@@ -379,6 +452,10 @@
 
             // Restore everything to full opacity when moving off the visualization.
             function mouseleave(d) {
+                document.getElementById("printTypeOfTrade").innerText = ""
+                document.getElementById("printImportExport").innerText = ""
+                document.getElementById("printTradedItem").innerText = ""
+                document.getElementById("printValues").innerText = ""
 
                 // Hide the breadcrumb trail
                 d3.select("#trail")
@@ -454,7 +531,11 @@
                         .attr("dy", "0.35em")
                         .attr("text-anchor", "middle")
                         .text(function (d) {
-                            return d.data.name;
+                            if (d.data.name.length > 20) {
+                                return d.data.name.substring(0, 20) + "..."
+                            } else {
+                                return d.data.name;
+                            }
                         });
 
                 // Merge enter and update selections; set position for all nodes.

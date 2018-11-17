@@ -80,7 +80,7 @@ Importing Files
   --colors-white: #fff;
   --colors-gray: #6c757d;
   --colors-gray-dark: #343a40;
-  --theme-colors-primary: #000000;
+  --theme-colors-primary: #FF6A00;
   --theme-colors-secondary: #6c757d;
   --theme-colors-success: #69BA6D;
   --theme-colors-info: #48a1af;
@@ -3009,16 +3009,16 @@ fieldset:disabled a.btn {
 
 /* line 70, ../../scss/bootstrap/_buttons.scss */
 .btn-outline-primary {
-  color: #4B89FC;
+  color: #FF6A00;
   background-color: transparent;
   background-image: none;
-  border-color: #4B89FC;
+  border-color: #FF6A00;
 }
 /* line 63, ../../scss/bootstrap/mixins/_buttons.scss */
 .btn-outline-primary:hover {
   color: #fff;
-  background-color: #4B89FC;
-  border-color: #4B89FC;
+  background-color: #FF6A00;
+  border-color: #FF6A00;
 }
 /* line 69, ../../scss/bootstrap/mixins/_buttons.scss */
 .btn-outline-primary:focus, .btn-outline-primary.focus {
