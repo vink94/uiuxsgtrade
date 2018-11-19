@@ -16,7 +16,37 @@
         <script src="https://d3js.org/d3.v4.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600">
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
+        <style>
+            .slider {
+                -webkit-appearance: none;
+                width: 100%;
+                height: 15px;
+                border-radius: 5px;   
+                background: #d3d3d3;
+                outline: none;
+                opacity: 0.7;
+                -webkit-transition: .2s;
+                transition: opacity .2s;
+            }
+
+            .slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%; 
+                background: #FF6A00;
+                cursor: pointer;
+            }
+
+            .slider::-moz-range-thumb {
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                background: #FF6A00;
+                cursor: pointer;
+            }
+        </style>
     </head>
 
     <body>
@@ -79,328 +109,42 @@
                     <div class="row page-tilte align-items-center">
                         <div class="col-md-12">
                             <a href="#" class="mt-3 d-md-none float-right toggle-controls"><span class="material-icons">keyboard_arrow_down</span></a>
-                            <h1 class="weight-300 h3 title"> Sankey Chart </h1>
+                            <h1 class="weight-300 h3 title text-center" id="title"></h1>
                         </div> 
-                        <div class="col controls-wrapper mt-3 mt-md-0 d-none d-md-block ">
-                            <div class="controls d-flex justify-content-center justify-content-md-end">
-                                <button class="btn btn-primary" onclick="editChart()"> Edit Chart </button>
-                            </div>
-                        </div>
                     </div> 
 
                     <div class="content">
+                        <div class="form-group row">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-3">
+                                <input type="range" min="2013" max="2017" value="2017" class="slider" id="yearSelection" onchange='editField()'>
+                            </div>
+                            <div class="col-sm-1">
+                                <div id="years"></div>
+                            </div>
+                            <div class="col-sm-1">
+                                <label class="label-group"> Top K: </label>
+                            </div>
+                            <div class="col-sm-1">
+                                <input class="form-group" type="number" min="0" max="97" name="topk" id="topk" value="5" onchange="editField()"/>
+                            </div>
+                            <div class="col-sm-1">
+                                <label class="label-group"> Partners: </label>
+                            </div>
+                            <div class="col-sm-1">
+                                <select name="countryList" multiple="" id="countryList" onclick="loadChart()"></select>
+                            </div>
+                            <div class="col-sm-3"></div>
+                        </div>
                         <div class="row">
-                            <div class="col-sm-9">
+                            <div class="col-sm-12">
                                 <div id="plotlyDiv"></div>
                             </div>
-                            <!-- 
-                            <div class="col-sm-3">
-                                <input type="checkbox" id="togglelegend"> Legend<br/>
-                                <div id="legend" style="visibility: hidden;"></div>
-                            </div>
-                            -->
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
-        <div class="modal fade" id="longModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form>
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel"> Chart Generator </h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span class="material-icons ">close</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="col-sm-12 row">
-                                <label class="label-group"> Year to show: </label>
-                                <select class="form-control" id="selection">
-                                    <option value="2013"> 2013 </option>
-                                    <option value="2014"> 2014 </option>
-                                    <option value="2015"> 2015 </option>
-                                    <option value="2016"> 2016 </option>
-                                    <option value="2017"> 2017 </option>
-                                </select>
-                            </div>
-
-                            <label class="label-group"> Partners: </label> <br/>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <input type="checkbox" name="partner" value="ASEAN [00]">  ASEAN </br>
-                                    <input type="checkbox" name="partner" value="Extra-ASEAN [88]">  Extra-ASEAN </br>
-                                    <input type="checkbox" name="partner" value="Afghanistan [AF]"> Afghanistan </br>
-                                    <input type="checkbox" name="partner" value="Albania [AL]"> Albania </br>
-                                    <input type="checkbox" name="partner" value="American Samoa [AS]"> American Samoa </br>
-                                    <input type="checkbox" name="partner" value="Angola [AO]"> Angola </br>
-                                    <input type="checkbox" name="partner" value="Antarctica [AQ]"> Antarctica </br>
-                                    <input type="checkbox" name="partner" value="Argentina [AR]"> Argentina </br>
-                                    <input type="checkbox" name="partner" value="Aruba [AW]"> Aruba </br>
-                                    <input type="checkbox" name="partner" value="Austria [AT]"> Austria </br>
-                                    <input type="checkbox" name="partner" value="Bahamas [BS]"> Bahamas </br>
-                                    <input type="checkbox" name="partner" value="Bangladesh [BD]"> Bangladesh </br>
-                                    <input type="checkbox" name="partner" value="Belarus [BY]"> Belarus </br>
-                                    <input type="checkbox" name="partner" value="Belize [BZ]"> Belize </br>
-                                    <input type="checkbox" name="partner" value="Bermuda [BM]"> Bermuda </br>
-                                    <input type="checkbox" name="partner" value="Bolivia [BO]"> Bolivia </br>
-                                    <input type="checkbox" name="partner" value="Bosnia and Herzegovina [BA]"> Bosnia and Herzegovina </br>
-                                    <input type="checkbox" name="partner" value="Bouvet Island [BV]"> Bouvet Island </br>
-                                    <input type="checkbox" name="partner" value="British Indian Ocean Territory [IO]"> British Indian Ocean Territory </br>
-                                    <input type="checkbox" name="partner" value="Bulgaria [BG]"> Bulgaria </br>
-                                    <input type="checkbox" name="partner" value="Burundi [BI]"> Burundi </br>
-                                    <input type="checkbox" name="partner" value="Cameroon [CM]"> Cameroon </br>
-                                    <input type="checkbox" name="partner" value="Cape-Verde [CV]"> Cape-Verde </br>
-                                    <input type="checkbox" name="partner" value="Central African Republic [CF]"> Central African Republic </br>
-                                    <input type="checkbox" name="partner" value="Chad [TD]"> Chad </br>
-                                    <input type="checkbox" name="partner" value="China (People's Republic of) [CN]"> China (People's Republic of) </br>
-                                    <input type="checkbox" name="partner" value="Christmas Islands [CX]"> Christmas Islands </br>
-                                    <input type="checkbox" name="partner" value="Code used for adjustments [QZ]"> Code used for adjustments </br>
-                                    <input type="checkbox" name="partner" value="Comoros [KM]"> Comoros </br>
-                                    <input type="checkbox" name="partner" value="Congo [CG]"> Congo </br>
-                                    <input type="checkbox" name="partner" value="Costa Rica [CR]"> Costa Rica </br>
-                                    <input type="checkbox" name="partner" value="Croatia [HR]"> Croatia </br>
-                                    <input type="checkbox" name="partner" value="Curacao [CW]"> Curacao </br>
-                                    <input type="checkbox" name="partner" value="Czech Republic [CZ]"> Czech Republic </br>
-                                    <input type="checkbox" name="partner" value="Denmark [DK]"> Denmark </br>
-                                    <input type="checkbox" name="partner" value="Dominica [DM]"> Dominica </br>
-                                    <input type="checkbox" name="partner" value="Ecuador [EC]"> Ecuador </br>
-                                    <input type="checkbox" name="partner" value="El Salvador [SV]"> El Salvador </br>
-                                    <input type="checkbox" name="partner" value="Eritrea [ER]"> Eritrea </br>
-                                    <input type="checkbox" name="partner" value="Ethiopia [ET]"> Ethiopia </br>
-                                    <input type="checkbox" name="partner" value="Faroe Islands [FO]"> Faroe Islands </br>
-                                    <input type="checkbox" name="partner" value="Finland [FI]"> Finland </br>
-                                    <input type="checkbox" name="partner" value="France [FR]"> France </br>
-                                    <input type="checkbox" name="partner" value="French Polynesia [PF]"> French Polynesia </br>
-                                    <input type="checkbox" name="partner" value="Gabon [GA]"> Gabon </br>
-                                    <input type="checkbox" name="partner" value="Georgia [GE]"> Georgia </br>
-                                    <input type="checkbox" name="partner" value="Ghana [GH]"> Ghana </br>
-                                    <input type="checkbox" name="partner" value="Greece [GR]"> Greece </br>
-                                    <input type="checkbox" name="partner" value="Grenada [GD]"> Grenada </br>
-                                    <input type="checkbox" name="partner" value="Guadeloupe [GP]"> Guadeloupe </br>
-                                    <input type="checkbox" name="partner" value="Guatemala [GT]"> Guatemala </br>
-                                    <input type="checkbox" name="partner" value="Guinea [GN]"> Guinea </br>
-                                    <input type="checkbox" name="partner" value="Guyana [GY]"> Guyana </br>
-                                    <input type="checkbox" name="partner" value="Heard Island and McDonald Islands [HM]"> Heard Island and McDonald Islands </br>
-                                    <input type="checkbox" name="partner" value="Honduras [HN]"> Honduras </br>
-                                    <input type="checkbox" name="partner" value="Hungary [HU]"> Hungary </br>
-                                    <input type="checkbox" name="partner" value="India [IN]"> India </br>
-                                    <input type="checkbox" name="partner" value="Iran, Islamic Republic of [IR]"> Iran, Islamic Republic of </br>
-                                    <input type="checkbox" name="partner" value="Ireland [IE]"> Ireland </br>
-                                    <input type="checkbox" name="partner" value="Israel [IL]"> Israel </br>
-                                    <input type="checkbox" name="partner" value="Jamaica [JM]"> Jamaica </br>
-                                    <input type="checkbox" name="partner" value="Jersey [JE]"> Jersey </br>
-                                    <input type="checkbox" name="partner" value="Kazakhstan [KZ]"> Kazakhstan </br>
-                                    <input type="checkbox" name="partner" value="Kiribati [KI]"> Kiribati </br>
-                                    <input type="checkbox" name="partner" value="Korea, Democratic People's Republic of [KP]"> Korea, Democratic People's Republic of </br>
-                                    <input type="checkbox" name="partner" value="KOSOVO [XK]"> KOSOVO </br>
-                                    <input type="checkbox" name="partner" value="Kyrgyzstan [KG]"> Kyrgyzstan </br>
-                                    <input type="checkbox" name="partner" value="Latvia [LV]"> Latvia </br>
-                                    <input type="checkbox" name="partner" value="Lesotho [LS]"> Lesotho </br>
-                                    <input type="checkbox" name="partner" value="Libyan Arab Jamahiriya [LY]"> Libyan Arab Jamahiriya </br>
-                                    <input type="checkbox" name="partner" value="Lithuania [LT]"> Lithuania </br>
-                                    <input type="checkbox" name="partner" value="Macao [MO]"> Macao </br>
-                                    <input type="checkbox" name="partner" value="Malawi [MW]"> Malawi </br>
-                                    <input type="checkbox" name="partner" value="Maldives [MV]"> Maldives </br>
-                                    <input type="checkbox" name="partner" value="Malta [MT]"> Malta </br>
-                                    <input type="checkbox" name="partner" value="Marshall Islands [MH]"> Marshall Islands </br>
-                                    <input type="checkbox" name="partner" value="Mauritania [MR]"> Mauritania </br>
-                                    <input type="checkbox" name="partner" value="Mayotte [YT]"> Mayotte </br>
-                                    <input type="checkbox" name="partner" value="Mexico [MX]"> Mexico </br>
-                                    <input type="checkbox" name="partner" value="Moldova, Republic of [MD]"> Moldova, Republic of </br>
-                                    <input type="checkbox" name="partner" value="Mongolia [MN]"> Mongolia </br>
-                                    <input type="checkbox" name="partner" value="Montserrat [MS]"> Montserrat </br>
-                                    <input type="checkbox" name="partner" value="Mozambique [MZ]"> Mozambique </br>
-                                    <input type="checkbox" name="partner" value="Namibia [NA]"> Namibia </br>
-                                    <input type="checkbox" name="partner" value="Nepal [NP]"> Nepal </br>
-                                    <input type="checkbox" name="partner" value="Netherlands Antilles [AN]"> Netherlands Antilles </br>
-                                    <input type="checkbox" name="partner" value="New Zealand [NZ]"> New Zealand </br>
-                                    <input type="checkbox" name="partner" value="Niger [NE]"> Niger </br>
-                                    <input type="checkbox" name="partner" value="Niue [NU]"> Niue </br>
-                                    <input type="checkbox" name="partner" value="Northern Mariana Islands [MP]"> Northern Mariana Islands </br>
-                                    <input type="checkbox" name="partner" value="Occupied Palestinian Territory [PS]"> Occupied Palestinian Territory </br>
-                                    <input type="checkbox" name="partner" value="Pakistan [PK]"> Pakistan </br>
-                                    <input type="checkbox" name="partner" value="Panama [PA]"> Panama </br>
-                                    <input type="checkbox" name="partner" value="Paraguay [PY]"> Paraguay </br>
-                                    <input type="checkbox" name="partner" value="Philippines [PH]"> Philippines </br>
-                                    <input type="checkbox" name="partner" value="Poland [PL]"> Poland </br>
-                                    <input type="checkbox" name="partner" value="Puerto Rico [PR]"> Puerto Rico </br>
-                                    <input type="checkbox" name="partner" value="Reunion [RE]"> Reunion </br>
-                                    <input type="checkbox" name="partner" value="Russian Federation [RU]"> Russian Federation </br>
-                                    <input type="checkbox" name="partner" value="Saint Barthelemy [BL]"> Saint Barthelemy </br>
-                                    <input type="checkbox" name="partner" value="Saint Lucia [LC]"> Saint Lucia </br>
-                                    <input type="checkbox" name="partner" value="Samoa [WS]"> Samoa </br>
-                                    <input type="checkbox" name="partner" value="Sao Tomé and Principe [ST]"> Sao Tomé and Principe </br>
-                                    <input type="checkbox" name="partner" value="Saudi Arabia [SA]"> Saudi Arabia </br>
-                                    <input type="checkbox" name="partner" value="SERBIA [RS]"> SERBIA </br>
-                                    <input type="checkbox" name="partner" value="Sierra Leone [SL]"> Sierra Leone </br>
-                                    <input type="checkbox" name="partner" value="Sint Maarten [SX]"> Sint Maarten </br>
-                                    <input type="checkbox" name="partner" value="Slovenia [SI]"> Slovenia </br>
-                                    <input type="checkbox" name="partner" value="Somalia [SO]"> Somalia </br>
-                                    <input type="checkbox" name="partner" value="South Georgia &amp; South Sandwich Islands [GS]"> South Georgia &amp; South Sandwich Islands </br>
-                                    <input type="checkbox" name="partner" value="Spain [ES]"> Spain </br>
-                                    <input type="checkbox" name="partner" value="St Kitts and Nevis [KN]"> St Kitts and Nevis </br>
-                                    <input type="checkbox" name="partner" value="Stores and provisions [QQ]"> Stores and provisions </br>
-                                    <input type="checkbox" name="partner" value="Suriname [SR]"> Suriname </br>
-                                    <input type="checkbox" name="partner" value="Swaziland [SZ]"> Swaziland </br>
-                                    <input type="checkbox" name="partner" value="Switzerland [CH]"> Switzerland </br>
-                                    <input type="checkbox" name="partner" value="Taiwan [TW]"> Taiwan </br>
-                                    <input type="checkbox" name="partner" value="Tanzania, United Republic of [TZ]"> Tanzania, United Republic of </br>
-                                    <input type="checkbox" name="partner" value="Timor-Leste [TL]"> Timor-Leste </br>
-                                    <input type="checkbox" name="partner" value="Tokelau Islands [TK]"> Tokelau Islands </br>
-                                    <input type="checkbox" name="partner" value="Trinidad and Tobago [TT]"> Trinidad and Tobago </br>
-                                    <input type="checkbox" name="partner" value="Turkey [TR]"> Turkey </br>
-                                    <input type="checkbox" name="partner" value="Turks and Caicos Islands [TC]"> Turks and Caicos Islands </br>
-                                    <input type="checkbox" name="partner" value="Uganda [UG]"> Uganda </br>
-                                    <input type="checkbox" name="partner" value="United Arab Emirates [AE]"> United Arab Emirates </br>
-                                    <input type="checkbox" name="partner" value="United States  Minor Outlying islands [UM]"> United States  Minor Outlying islands </br>
-                                    <input type="checkbox" name="partner" value="Uruguay [UY]"> Uruguay </br>
-                                    <input type="checkbox" name="partner" value="Vanuatu [VU]"> Vanuatu </br>
-                                    <input type="checkbox" name="partner" value="Viet Nam [VN]"> Viet Nam </br>
-                                    <input type="checkbox" name="partner" value="Virgin Islands, British [VG]"> Virgin Islands, British </br>
-                                    <input type="checkbox" name="partner" value="Western Sahara [EH]"> Western Sahara </br>
-                                    <input type="checkbox" name="partner" value="Zambia [ZM]"> Zambia </br>
-                                </div>
-                                <div class="col-sm-6">
-                                    <input type="checkbox" name="partner" value="European Union [EU]">  European Union </br>
-                                    <input type="checkbox" name="partner" value="WORLD [99]">  WORLD </br>
-                                    <input type="checkbox" name="partner" value="Åland Islands [AX]"> Åland Islands </br>
-                                    <input type="checkbox" name="partner" value="Algeria [DZ]"> Algeria </br>
-                                    <input type="checkbox" name="partner" value="Andorra [AD]"> Andorra </br>
-                                    <input type="checkbox" name="partner" value="Anguilla [AI]"> Anguilla </br>
-                                    <input type="checkbox" name="partner" value="Antigua and Barbuda [AG]"> Antigua and Barbuda </br>
-                                    <input type="checkbox" name="partner" value="Armenia [AM]"> Armenia </br>
-                                    <input type="checkbox" name="partner" value="Australia [AU]"> Australia </br>
-                                    <input type="checkbox" name="partner" value="Azerbaijan [AZ]"> Azerbaijan </br>
-                                    <input type="checkbox" name="partner" value="Bahrain [BH]"> Bahrain </br>
-                                    <input type="checkbox" name="partner" value="Barbados [BB]"> Barbados </br>
-                                    <input type="checkbox" name="partner" value="Belgium [BE]"> Belgium </br>
-                                    <input type="checkbox" name="partner" value="Benin [BJ]"> Benin </br>
-                                    <input type="checkbox" name="partner" value="Bhutan [BT]"> Bhutan </br>
-                                    <input type="checkbox" name="partner" value="Bonaire, Sint Eustatius and Saba [BQ]"> Bonaire, Sint Eustatius and Saba </br>
-                                    <input type="checkbox" name="partner" value="Botswana [BW]"> Botswana </br>
-                                    <input type="checkbox" name="partner" value="Brazil [BR]"> Brazil </br>
-                                    <input type="checkbox" name="partner" value="Brunei Darussalam [BN]"> Brunei Darussalam </br>
-                                    <input type="checkbox" name="partner" value="Burkina Faso [BF]"> Burkina Faso </br>
-                                    <input type="checkbox" name="partner" value="Cambodia [KH]"> Cambodia </br>
-                                    <input type="checkbox" name="partner" value="Canada [CA]"> Canada </br>
-                                    <input type="checkbox" name="partner" value="Cayman Islands [KY]"> Cayman Islands </br>
-                                    <input type="checkbox" name="partner" value="Ceuta [XC]"> Ceuta </br>
-                                    <input type="checkbox" name="partner" value="Chile [CL]"> Chile </br>
-                                    <input type="checkbox" name="partner" value="Cocos Islands (or Keeling Islands) [CC]"> Cocos Islands (or Keeling Islands) </br>
-                                    <input type="checkbox" name="partner" value="Colombia [CO]"> Colombia </br>
-                                    <input type="checkbox" name="partner" value="Congo (Dem. Rep. of) [CD]"> Congo (Dem. Rep. of) </br>
-                                    <input type="checkbox" name="partner" value="Cook Islands [CK]"> Cook Islands </br>
-                                    <input type="checkbox" name="partner" value="Côte d'Ivoire [CI]"> Côte d'Ivoire </br>
-                                    <input type="checkbox" name="partner" value="Cuba [CU]"> Cuba </br>
-                                    <input type="checkbox" name="partner" value="Cyprus [CY]"> Cyprus </br>
-                                    <input type="checkbox" name="partner" value="Djibouti [DJ]"> Djibouti </br>
-                                    <input type="checkbox" name="partner" value="Dominican Republic [DO]"> Dominican Republic </br>
-                                    <input type="checkbox" name="partner" value="Egypt [EG]"> Egypt </br>
-                                    <input type="checkbox" name="partner" value="Equatorial Guinea [GQ]"> Equatorial Guinea </br>
-                                    <input type="checkbox" name="partner" value="Estonia [EE]"> Estonia </br>
-                                    <input type="checkbox" name="partner" value="Falkland Islands [FK]"> Falkland Islands </br>
-                                    <input type="checkbox" name="partner" value="Fiji [FJ]"> Fiji </br>
-                                    <input type="checkbox" name="partner" value="Former Yugoslav Republic of Macedonia [MK]"> Former Yugoslav Republic of Macedonia </br>
-                                    <input type="checkbox" name="partner" value="French Guyana [GF]"> French Guyana </br>
-                                    <input type="checkbox" name="partner" value="French Southern Territories [TF]"> French Southern Territories </br>
-                                    <input type="checkbox" name="partner" value="Gambia [GM]"> Gambia </br>
-                                    <input type="checkbox" name="partner" value="Germany [DE]"> Germany </br>
-                                    <input type="checkbox" name="partner" value="Gibraltar [GI]"> Gibraltar </br>
-                                    <input type="checkbox" name="partner" value="Greenland [GL]"> Greenland </br>
-                                    <input type="checkbox" name="partner" value="Guam [GU]"> Guam </br>
-                                    <input type="checkbox" name="partner" value="GUERNSEY  [GG]"> GUERNSEY  </br>
-                                    <input type="checkbox" name="partner" value="Guinea-Bissau [GW]"> Guinea-Bissau </br>
-                                    <input type="checkbox" name="partner" value="Haiti [HT]"> Haiti </br>
-                                    <input type="checkbox" name="partner" value="Holy See [VA]"> Holy See </br>
-                                    <input type="checkbox" name="partner" value="Hong Kong [HK]"> Hong Kong </br>
-                                    <input type="checkbox" name="partner" value="Iceland [IS]"> Iceland </br>
-                                    <input type="checkbox" name="partner" value="Indonesia [ID]"> Indonesia </br>
-                                    <input type="checkbox" name="partner" value="Iraq [IQ]"> Iraq </br>
-                                    <input type="checkbox" name="partner" value="Isle of Man [IM]"> Isle of Man </br>
-                                    <input type="checkbox" name="partner" value="Italy [IT]"> Italy </br>
-                                    <input type="checkbox" name="partner" value="Japan [JP]"> Japan </br>
-                                    <input type="checkbox" name="partner" value="Jordan [JO]"> Jordan </br>
-                                    <input type="checkbox" name="partner" value="Kenya [KE]"> Kenya </br>
-                                    <input type="checkbox" name="partner" value="Korea, Republic of [KR]"> Korea, Republic of </br>
-                                    <input type="checkbox" name="partner" value="Kuwait [KW]"> Kuwait </br>
-                                    <input type="checkbox" name="partner" value="Lao PDR [LA]"> Lao PDR </br>
-                                    <input type="checkbox" name="partner" value="Lebanon [LB]"> Lebanon </br>
-                                    <input type="checkbox" name="partner" value="Liberia [LR]"> Liberia </br>
-                                    <input type="checkbox" name="partner" value="Liechtenstein [LI]"> Liechtenstein </br>
-                                    <input type="checkbox" name="partner" value="Luxembourg [LU]"> Luxembourg </br>
-                                    <input type="checkbox" name="partner" value="Madagascar [MG]"> Madagascar </br>
-                                    <input type="checkbox" name="partner" value="Malaysia [MY]"> Malaysia </br>
-                                    <input type="checkbox" name="partner" value="Mali [ML]"> Mali </br>
-                                    <input type="checkbox" name="partner" value="Martinique [MQ]"> Martinique </br>
-                                    <input type="checkbox" name="partner" value="Mauritius [MU]"> Mauritius </br>
-                                    <input type="checkbox" name="partner" value="Melilla [XL]"> Melilla </br>
-                                    <input type="checkbox" name="partner" value="Micronesia, Federated States of [FM]"> Micronesia, Federated States of </br>
-                                    <input type="checkbox" name="partner" value="Monaco [MC]"> Monaco </br>
-                                    <input type="checkbox" name="partner" value="MONTENEGRO [ME]"> MONTENEGRO </br>
-                                    <input type="checkbox" name="partner" value="Morocco [MA]"> Morocco </br>
-                                    <input type="checkbox" name="partner" value="Myanmar [MM]"> Myanmar </br>
-                                    <input type="checkbox" name="partner" value="Nauru [NR]"> Nauru </br>
-                                    <input type="checkbox" name="partner" value="Netherlands [NL]"> Netherlands </br>
-                                    <input type="checkbox" name="partner" value="New Caledonia [NC]"> New Caledonia </br>
-                                    <input type="checkbox" name="partner" value="Nicaragua [NI]"> Nicaragua </br>
-                                    <input type="checkbox" name="partner" value="Nigeria [NG]"> Nigeria </br>
-                                    <input type="checkbox" name="partner" value="Norfolk Island [NF]"> Norfolk Island </br>
-                                    <input type="checkbox" name="partner" value="Norway [NO]"> Norway </br>
-                                    <input type="checkbox" name="partner" value="Oman [OM]"> Oman </br>
-                                    <input type="checkbox" name="partner" value="Palau [PW]"> Palau </br>
-                                    <input type="checkbox" name="partner" value="Papua New Guinea [PG]"> Papua New Guinea </br>
-                                    <input type="checkbox" name="partner" value="Peru [PE]"> Peru </br>
-                                    <input type="checkbox" name="partner" value="Pitcairn [PN]"> Pitcairn </br>
-                                    <input type="checkbox" name="partner" value="Portugal [PT]"> Portugal </br>
-                                    <input type="checkbox" name="partner" value="Qatar [QA]"> Qatar </br>
-                                    <input type="checkbox" name="partner" value="Romania [RO]"> Romania </br>
-                                    <input type="checkbox" name="partner" value="Rwanda [RW]"> Rwanda </br>
-                                    <input type="checkbox" name="partner" value="Saint Helena [SH]"> Saint Helena </br>
-                                    <input type="checkbox" name="partner" value="Saint Pierre and Miquelon [PM]"> Saint Pierre and Miquelon </br>
-                                    <input type="checkbox" name="partner" value="San Marino [SM]"> San Marino </br>
-                                    <input type="checkbox" name="partner" value="Senegal [SN]"> Senegal </br>
-                                    <input type="checkbox" name="partner" value="Seychelles [SC]"> Seychelles </br>
-                                    <input type="checkbox" name="partner" value="Singapore [SG]"> Singapore </br>
-                                    <input type="checkbox" name="partner" value="Slovakia [SK]"> Slovakia </br>
-                                    <input type="checkbox" name="partner" value="Solomon Islands [SB]"> Solomon Islands </br>
-                                    <input type="checkbox" name="partner" value="South Africa [ZA]"> South Africa </br>
-                                    <input type="checkbox" name="partner" value="South Sudan [SS]"> South Sudan </br>
-                                    <input type="checkbox" name="partner" value="Sri Lanka [LK]"> Sri Lanka </br>
-                                    <input type="checkbox" name="partner" value="St Vincent and the Grenadines [VC]"> St Vincent and the Grenadines </br>
-                                    <input type="checkbox" name="partner" value="Sudan [SD]"> Sudan </br>
-                                    <input type="checkbox" name="partner" value="SVALBARD [SJ]"> SVALBARD </br>
-                                    <input type="checkbox" name="partner" value="Sweden [SE]"> Sweden </br>
-                                    <input type="checkbox" name="partner" value="Syrian Arab Republic [SY]"> Syrian Arab Republic </br>
-                                    <input type="checkbox" name="partner" value="Tajikistan [TJ]"> Tajikistan </br>
-                                    <input type="checkbox" name="partner" value="Thailand [TH]"> Thailand </br>
-                                    <input type="checkbox" name="partner" value="Togo [TG]"> Togo </br>
-                                    <input type="checkbox" name="partner" value="Tonga [TO]"> Tonga </br>
-                                    <input type="checkbox" name="partner" value="Tunisia [TN]"> Tunisia </br>
-                                    <input type="checkbox" name="partner" value="Turkmenistan [TM]"> Turkmenistan </br>
-                                    <input type="checkbox" name="partner" value="Tuvalu [TV]"> Tuvalu </br>
-                                    <input type="checkbox" name="partner" value="Ukraine [UA]"> Ukraine </br>
-                                    <input type="checkbox" name="partner" value="United Kingdom [GB]"> United Kingdom </br>
-                                    <input type="checkbox" name="partner" value="United states [US]"> United states </br>
-                                    <input type="checkbox" name="partner" value="Uzbekistan [UZ]"> Uzbekistan </br>
-                                    <input type="checkbox" name="partner" value="Venezuela [VE]"> Venezuela </br>
-                                    <input type="checkbox" name="partner" value="Virgin Islands (US) [VI]"> Virgin Islands (US) </br>
-                                    <input type="checkbox" name="partner" value="Wallis and Futuna [WF]"> Wallis and Futuna </br>
-                                    <input type="checkbox" name="partner" value="Yemen [YE]"> Yemen </br>
-                                    <input type="checkbox" name="partner" value="Zimbabwe [ZW]"> Zimbabwe </br>
-                                </div> 
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="loadChart()">Save changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
 
         <div class="modal fade" id="switchApp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -473,12 +217,110 @@
         <script src="assets/js/custom.js">
         </script>
         <script>
+            var dataImport2013 = []
+            var dataExport2013 = []
+            var dataImport2014 = []
+            var dataExport2014 = []
+            var dataImport2015 = []
+            var dataExport2015 = []
+            var dataImport2016 = []
+            var dataExport2016 = []
+            var dataImport2017 = []
+            var dataExport2017 = []
+            var countryList = []
+
+            var slider = document.getElementById("yearSelection");
+            var output = document.getElementById("years");
+            output.innerHTML = slider.value; // Display the default slider value
+
+            // Update the current slider value (each time you drag the slider handle)
+            slider.oninput = function () {
+                output.innerHTML = this.value;
+            }
+
             $(document).ready(function () {
-                $("#longModal").modal({
-                    backdrop: 'static',
-                    keyboard: false
+                $.ajax({
+                    url: "data/processedASEANData.csv",
+                    success: function (data) {
+                        dataArr = data.split("|")
+                        for (i = 1; i < dataArr.length - 1; i++) { //dataArr.length
+                            if (!countryList.includes(dataArr[i].split("#")[2])) {
+                                countryList.push(dataArr[i].split("#")[2])
+                            }
+                            if (dataArr[i].split("#")[0].trim() === "2013") {
+                                if (dataArr[i].split("#")[1].trim() === "Import") {
+                                    dataImport2013.push(dataArr[i].split("#"))
+                                } else {
+                                    dataExport2013.push(dataArr[i].split("#"))
+                                }
+                            }
+                            if (dataArr[i].split("#")[0].trim() === "2014") {
+                                if (dataArr[i].split("#")[1].trim() === "Import") {
+                                    dataImport2014.push(dataArr[i].split("#"))
+                                } else {
+                                    dataExport2014.push(dataArr[i].split("#"))
+                                }
+                            }
+                            if (dataArr[i].split("#")[0].trim() === "2015") {
+                                if (dataArr[i].split("#")[1].trim() === "Import") {
+                                    dataImport2015.push(dataArr[i].split("#"))
+                                } else {
+                                    dataExport2015.push(dataArr[i].split("#"))
+                                }
+                            }
+                            if (dataArr[i].split("#")[0].trim() === "2016") {
+                                if (dataArr[i].split("#")[1].trim() === "Import") {
+                                    dataImport2016.push(dataArr[i].split("#"))
+                                } else {
+                                    dataExport2016.push(dataArr[i].split("#"))
+                                }
+                            }
+                            if (dataArr[i].split("#")[0].trim() === "2017") {
+                                if (dataArr[i].split("#")[1].trim() === "Import") {
+                                    dataImport2017.push(dataArr[i].split("#"))
+                                } else {
+                                    dataExport2017.push(dataArr[i].split("#"))
+                                }
+                            }
+                        }
+
+                        filteredImportData = []
+                        filteredExportData = []
+
+                        for (i = 0; i < dataExport2017.length - 1; i++) { //dataArr.length
+                            if (dataExport2017[i][2].trim() === "WORLD [99]") {
+                                filteredExportData.push(dataExport2017[i])
+                            }
+                        }
+
+                        for (i = 0; i < dataImport2017.length - 1; i++) { //dataArr.length
+                            if (dataImport2017[i][2].trim() === "WORLD [99]") {
+                                filteredImportData.push(dataImport2017[i])
+                            }
+                        }
+
+                        for (i = 0; i < countryList.length; i++) {
+                            select = document.getElementById("countryList")
+                            option = document.createElement("option")
+                            option.setAttribute("value", countryList[i])
+                            option.innerText = countryList[i].split("\[")[0].trim()
+                            select.appendChild(option)
+                        }
+
+                        setTimeout(function () {
+                            loadImportProcess(filteredImportData, 2017, 5)
+                            loadExportProcess(filteredExportData, 2017, 5)
+                        }, 1000)
+                    },
                 });
             })
+
+            function editField() {
+                if (document.getElementById("topk").value === "") {
+                    document.getElementById("topk").value = "5"
+                }
+                loadChart()
+            }
 
             function editChart() {
                 $('#longModal').modal('show');
@@ -490,54 +332,108 @@
             var label = []
 
             function loadChart() {
-                yearSelected = document.getElementById("selection").value
+                yearSelected = document.getElementById("yearSelection").value
                 partnerList = []
 
-                for (i = 0; i < document.getElementsByName("partner").length; i++) {
-                    if (document.getElementsByName("partner")[i].checked == true) {
-                        partnerList.push(document.getElementsByName("partner")[i].value)
+                for (i = 0; i < document.getElementsByName("countryList")[0].length; i++) {
+                    if (document.getElementsByName("countryList")[0][i].selected === true) {
+                        partnerList.push(document.getElementsByName("countryList")[0][i].value.trim())
                     }
                 }
-                retrieveImportData = []
-                retrieveExportData = []
-                retrieveData = []
 
-                $.ajax({
-                    url: "data/processedASEANImportData" + yearSelected + ".csv",
-                    success: function (data) {
-                        dataArr = data.split("|")
-                        for (i = 0; i < dataArr.length - 1; i++) { //dataArr.length
-                            for (p = 0; p < partnerList.length; p++) {
-                                if (dataArr[i].split("#")[2].trim() === partnerList[p]) {
-                                    retrieveImportData.push(dataArr[i].split("#"))
-                                }
+                filteredExportData = []
+                filteredImportData = []
+
+                topk = document.getElementById("topk").value
+                if (yearSelected === "2013") {
+                    for (i = 0; i < dataExport2013.length - 1; i++) { //dataArr.length
+                        for (p = 0; p < partnerList.length; p++) {
+                            if (dataExport2013[i][2].trim() === partnerList[p]) {
+                                filteredExportData.push(dataExport2013[i])
                             }
                         }
-                    },
-                });
+                    }
 
-                $.ajax({
-                    url: "data/processedASEANExportData" + yearSelected + ".csv",
-                    success: function (data) {
-                        dataArr = data.split("|")
-                        for (i = 0; i < dataArr.length - 1; i++) { //dataArr.length
-                            for (p = 0; p < partnerList.length; p++) {
-                                if (dataArr[i].split("#")[2].trim() === partnerList[p]) {
-                                    retrieveExportData.push(dataArr[i].split("#"))
-                                }
+                    for (i = 0; i < dataImport2013.length - 1; i++) { //dataArr.length
+                        for (p = 0; p < partnerList.length; p++) {
+                            if (dataImport2013[i][2].trim() === partnerList[p]) {
+                                filteredImportData.push(dataImport2013[i])
                             }
                         }
-                    },
-                });
+                    }
+                } else if (yearSelected === "2014") {
+                    for (i = 0; i < dataExport2014.length - 1; i++) { //dataArr.length
+                        for (p = 0; p < partnerList.length; p++) {
+                            if (dataExport2014[i][2].trim() === partnerList[p]) {
+                                filteredExportData.push(dataExport2014[i])
+                            }
+                        }
+                    }
+
+                    for (i = 0; i < dataImport2014.length - 1; i++) { //dataArr.length
+                        for (p = 0; p < partnerList.length; p++) {
+                            if (dataImport2014[i][2].trim() === partnerList[p]) {
+                                filteredImportData.push(dataImport2014[i])
+                            }
+                        }
+                    }
+                } else if (yearSelected === "2015") {
+                    for (i = 0; i < dataExport2015.length - 1; i++) { //dataArr.length
+                        for (p = 0; p < partnerList.length; p++) {
+                            if (dataExport2015[i][2].trim() === partnerList[p]) {
+                                filteredExportData.push(dataExport2015[i])
+                            }
+                        }
+                    }
+
+                    for (i = 0; i < dataImport2015.length - 1; i++) { //dataArr.length
+                        for (p = 0; p < partnerList.length; p++) {
+                            if (dataImport2015[i][2].trim() === partnerList[p]) {
+                                filteredImportData.push(dataImport2015[i])
+                            }
+                        }
+                    }
+                } else if (yearSelected === "2016") {
+                    for (i = 0; i < dataExport2016.length - 1; i++) { //dataArr.length
+                        for (p = 0; p < partnerList.length; p++) {
+                            if (dataExport2016[i][2].trim() === partnerList[p]) {
+                                filteredExportData.push(dataExport2016[i])
+                            }
+                        }
+                    }
+
+                    for (i = 0; i < dataImport2016.length - 1; i++) { //dataArr.length
+                        for (p = 0; p < partnerList.length; p++) {
+                            if (dataImport2016[i][2].trim() === partnerList[p]) {
+                                filteredImportData.push(dataImport2016[i])
+                            }
+                        }
+                    }
+                } else if (yearSelected === "2017") {
+                    for (i = 0; i < dataExport2017.length - 1; i++) { //dataArr.length
+                        for (p = 0; p < partnerList.length; p++) {
+                            if (dataExport2017[i][2].trim() === partnerList[p]) {
+                                filteredExportData.push(dataExport2017[i])
+                            }
+                        }
+                    }
+
+                    for (i = 0; i < dataImport2017.length - 1; i++) { //dataArr.length
+                        for (p = 0; p < partnerList.length; p++) {
+                            if (dataImport2017[i][2].trim() === partnerList[p]) {
+                                filteredImportData.push(dataImport2017[i])
+                            }
+                        }
+                    }
+                }
 
                 setTimeout(function () {
-                    loadImportProcess(retrieveImportData, yearSelected)
-                    loadExportProcess(retrieveExportData, yearSelected)
-                    $("#longModal").modal("hide");
+                    loadImportProcess(filteredExportData, yearSelected, topk)
+                    loadExportProcess(filteredImportData, yearSelected, topk)
                 }, 1000)
             }
 
-            function loadImportProcess(importData, yearSelected) {
+            function loadImportProcess(importData, yearSelected, topk) {
                 source = []
                 target = []
                 value = []
@@ -577,7 +473,7 @@
                 var x = Object.keys(dict);
                 for (k = 0; k < items.length; k++) {
                     for (i = 0; i < x.length; i++) {
-                        if (counter < 5) {
+                        if (counter < topk) {
                             if (items[k][1] === dict[x[i]]) {
                                 label.push(x[i])
                                 counter += 1
@@ -624,7 +520,7 @@
                 }
             }
 
-            function loadExportProcess(exportData, yearSelected) {
+            function loadExportProcess(exportData, yearSelected, topk) {
                 sourceExport = []
                 targetExport = []
                 valueExport = []
@@ -640,7 +536,7 @@
                         country.push(exportData[i][2].trim())
                     }
                     // For category
-                    if (label.includes(exportData[i][3].trim()) == false) {
+                    if (labelExport.includes(exportData[i][3].trim()) == false) {
                         category.push(exportData[i][3].trim())
                         total = dict[exportData[i][3].trim()]
                         if (total === undefined) {
@@ -664,7 +560,7 @@
                 var x = Object.keys(dict);
                 for (k = 0; k < items.length; k++) {
                     for (i = 0; i < x.length; i++) {
-                        if (counter < 5) {
+                        if (counter < topk) {
                             if (items[k][1] === dict[x[i]]) {
                                 labelExport.push(x[i])
                                 counter += 1
@@ -740,6 +636,7 @@
                 target = target.concat(sourceExport.reverse())
                 value = value.concat(valueExport.reverse())
 
+                document.getElementById("title").innerText = "Distribution of Trade in Singapore by Top " + topk + " commodities in " + yearSelected
                 generateSankey(yearSelected)
             }
 
@@ -772,9 +669,6 @@
 
                 var printSankey = [printDiagram]
                 var layout = {
-                    title: "ASEAN " + yearSelected + " Trade",
-                    width: 1100,
-                    height: 550,
                     font: {
                         size: 10
                     }

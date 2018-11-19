@@ -13,7 +13,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <title> IS428: SG Trade Visualization </title>
-        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
         <style type="text/css">
             /* 13. Basic Styling with CSS */
@@ -42,254 +42,299 @@
             }
 
         </style>
-    </style>
-</head>
+    </head>
 
-<body>
-    <!-- Pre Loader-->
-    <div class="loader-wrapper">
-        <div class="spinner">
-            <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-            <circle class="length" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="28"></circle>
-            </svg>
-            <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-            <circle fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="28"></circle>
-            </svg>
-            <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-            <circle fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="28"></circle>
-            </svg>
-            <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-            <circle fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="28"></circle>
-            </svg>
+    <body>
+        <!-- Pre Loader-->
+        <div class="loader-wrapper">
+            <div class="spinner">
+                <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle class="length" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="28"></circle>
+                </svg>
+                <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="28"></circle>
+                </svg>
+                <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="28"></circle>
+                </svg>
+                <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="28"></circle>
+                </svg>
+            </div>
         </div>
-    </div>
-    <!-- Pre Loader-->
+        <!-- Pre Loader-->
 
-    <section class="wrapper">
-        <!-- SIDEBAR -->
-        <aside class="sidebar sidebar-light">
-            <nav class="navbar navbar-light bg-white">
-                <a class="navbar-brand m-0 py-2 brand-title" href="#"> Visual Analytics </a>
-                <span></span>
-                <a class="navbar-brand py-2 material-icons toggle-sidebar" href="#">menu</a>
-            </nav>
+        <section class="wrapper">
+            <!-- SIDEBAR -->
+            <aside class="sidebar sidebar-light">
+                <nav class="navbar navbar-light bg-white">
+                    <a class="navbar-brand m-0 py-2 brand-title" href="#"> Visual Analytics </a>
+                    <span></span>
+                    <a class="navbar-brand py-2 material-icons toggle-sidebar" href="#">menu</a>
+                </nav>
 
-            <nav class="navigation">
-                <ul>
-                    <li class=""><a href="index.html" title="Dashboard"><span class="nav-icon material-icons">public</span> Home </a></li>
-                    <li class=""><a href="SGImportExport.html"><span class="nav-icon material-icons "> card_travel </span> SG Trades </a></li>
-                    <li class=""><a href="ASEANTrades.html"><span class="nav-icon material-icons ">score</span> ASEAN Trades </a></li>
-                    <li class="active"><a href="SGTrade.html"><span class="nav-icon material-icons ">score</span> SG Trade </a></li>
-                </ul>
-            </nav>
-
-        </aside>
-
-        <div class="content-area">
-
-            <header class="header sticky-top">
-                <nav class="navbar px-sm-4 navbar-light bg-white">
-                    <a class="navbar-brand py-2 d-md-none  m-0 material-icons toggle-sidebar" href="#">menu</a>
-                    <ul class="navbar-nav flex-row ml-auto">
-                        <li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="Switch Application">
-                            <a data-toggle="modal" href="#" data-target="#switchApp" class="nav-link"><span class="material-icons align-middle">apps</span></a>
-                        </li>
-                        <li class="nav-item ml-sm-3 user-logedin dropdown">
-                            <a href="https://wiki.smu.edu.sg/18191is428g1/UserImport/UserExport" target="_blank" class="nav-link weight-400"><img src="image/250px-UIUXLogo.png" class="mr-2 rounded" width="28"> User Export / User Import</a>
-                        </li>
+                <nav class="navigation">
+                    <ul>
+                        <li class=""><a href="index.html" title="Dashboard"><span class="nav-icon material-icons">public</span> Home </a></li>
+                        <li class=""><a href="SGImportExport.html"><span class="nav-icon material-icons "> card_travel </span> SG Trades </a></li>
+                        <li class=""><a href="ASEANTrades.html"><span class="nav-icon material-icons ">score</span> ASEAN Trades </a></li>
+                        <li class="active"><a href="SGTrade.html"><span class="nav-icon material-icons ">score</span> SG Trade </a></li>
                     </ul>
                 </nav>
-            </header>
 
-            <div class="content-wrapper">
+            </aside>
 
-                <div class="row page-tilte align-items-center">
-                    <div class="col-md-12">
-                        <a href="#" class="mt-3 d-md-none float-right toggle-controls"><span class="material-icons">keyboard_arrow_down</span></a>
-                        <h1 class="weight-300 h3 title"> Sankey Chart </h1>
+            <div class="content-area">
+
+                <header class="header sticky-top">
+                    <nav class="navbar px-sm-4 navbar-light bg-white">
+                        <a class="navbar-brand py-2 d-md-none  m-0 material-icons toggle-sidebar" href="#">menu</a>
+                        <ul class="navbar-nav flex-row ml-auto">
+                            <li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="Switch Application">
+                                <a data-toggle="modal" href="#" data-target="#switchApp" class="nav-link"><span class="material-icons align-middle">apps</span></a>
+                            </li>
+                            <li class="nav-item ml-sm-3 user-logedin dropdown">
+                                <a href="https://wiki.smu.edu.sg/18191is428g1/UserImport/UserExport" target="_blank" class="nav-link weight-400"><img src="image/250px-UIUXLogo.png" class="mr-2 rounded" width="28"> User Export / User Import</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </header>
+
+                <div class="content-wrapper">
+
+                    <div class="row page-tilte align-items-center">
+                        <div class="col-md-12">
+                            <a href="#" class="mt-3 d-md-none float-right toggle-controls"><span class="material-icons">keyboard_arrow_down</span></a>
+                            <h1 class="weight-300 h3 title"> Line Chart </h1>
+                        </div> 
                     </div> 
-                    <div class="col controls-wrapper mt-3 mt-md-0 d-none d-md-block ">
-                        <div class="controls d-flex justify-content-center justify-content-md-end">
-                            <button class="btn btn-primary" onclick="editChart()"> Edit Chart </button>
-                        </div>
-                    </div>
-                </div> 
 
-                <div class="content">
-                    <div id="container"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="modal fade" id="switchApp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header px-4">
-                    <h5 class="modal-title" id="exampleModalLabel">Select Application</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span class="material-icons ">close</span>
-                    </button>
-                </div>
-                <div class="modal-body p-4">
-
-                    <div class="row align-items-stretch app-switcher">
-                        <div class="col-lg-3 col-6 mb-4">
-                            <a href="index.html" class="text-dark">
-                                <div class="card h-100">
-                                    <div class="card-body text-center">
-                                        <span class="material-icons md-48 " style="color:#21C3E0;">bubble_chart</span>
-                                        <p class="weight-400 m-0">Dashboard</p>
-                                        <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                    </div>
-                                </div>
-                            </a>
+                    <div class="content">
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <div id="container"></div>
+                            </div>
                         </div>
-                        <div class="col-lg-3 col-6 mb-4">
-                            <a href="ecommerce-dashboard.html" class="text-dark">
-                                <div class="card h-100">
-                                    <div class="card-body text-center">
-                                        <span class="material-icons md-48 text-primary">security</span>
-                                        <p class="weight-400 m-0">Ecommerce</p>
-                                        <small class="weight-300 text-muted">This is some text within a card body.</small>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header"> Trade Details </div>
+                                    <div class="card-body">
+                                        <form>
+                                            <div class="form-group row">
+                                                <div class="col-sm-2">
+                                                    <label class="label-control"> Import / Export </label>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <select class="form-group" id="type" onchange='loadChart()'>
+                                                        <option value="Import"> Import </option>
+                                                        <option value="Export"> Export </option>
+                                                        <option value="All"> Both </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <label class="label-control"> Countries Selection </label>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <select name="countrySelection" multiple="" id="countryList" onclick="loadChart()"></select>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-3 col-6 mb-4">
-                            <a href="mailbox.html" class="text-dark">
-                                <div class="card h-100 active-app">
-                                    <div class="card-body text-center">
-                                        <span class="material-icons md-48 text-danger">blur_on</span>
-                                        <p class="weight-400 m-0">Mail Box</p>
-                                        <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                        <span class="material-icons app-selected md-16">check</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-3 col-6 mb-4">
-                            <a href="blogger-feed-list.html" class="text-dark">
-                                <div class="card h-100">
-                                    <div class="card-body text-center">
-                                        <span class="material-icons md-48 text-warning">camera</span>
-                                        <p class="weight-400 m-0">Blogger</p>
-                                        <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                    </div>
-                                </div>
-                            </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
+
+        <div class="modal fade" id="switchApp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header px-4">
+                        <h5 class="modal-title" id="exampleModalLabel">Select Application</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span class="material-icons ">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body p-4">
+
+                        <div class="row align-items-stretch app-switcher">
+                            <div class="col-lg-3 col-6 mb-4">
+                                <a href="index.html" class="text-dark">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <span class="material-icons md-48 " style="color:#21C3E0;">bubble_chart</span>
+                                            <p class="weight-400 m-0">Dashboard</p>
+                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-lg-3 col-6 mb-4">
+                                <a href="ecommerce-dashboard.html" class="text-dark">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <span class="material-icons md-48 text-primary">security</span>
+                                            <p class="weight-400 m-0">Ecommerce</p>
+                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-lg-3 col-6 mb-4">
+                                <a href="mailbox.html" class="text-dark">
+                                    <div class="card h-100 active-app">
+                                        <div class="card-body text-center">
+                                            <span class="material-icons md-48 text-danger">blur_on</span>
+                                            <p class="weight-400 m-0">Mail Box</p>
+                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
+                                            <span class="material-icons app-selected md-16">check</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-lg-3 col-6 mb-4">
+                                <a href="blogger-feed-list.html" class="text-dark">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <span class="material-icons md-48 text-warning">camera</span>
+                                            <p class="weight-400 m-0">Blogger</p>
+                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <script src="assets/js/lib/moment.min.js"></script>
-    <script src="assets/js/lib/jquery.min.js"></script>
-    <script src="assets/js/lib/popper.min.js"></script>
-    <script src="assets/js/bootstrap/bootstrap.min.js"></script>
-    <script src="assets/js/chosen-js/chosen.jquery.js"></script>
-    <script src="assets/js/custom.js">
-    </script>
-    <script>
-        // 2. Use the margin convention practice 
-        var margin = {top: 50, right: 50, bottom: 50, left: 50}
-        , width = 1000 - margin.left - margin.right // Use the window's width 
-                , height = 450 - margin.top - margin.bottom; // Use the window's height
+        <script src="assets/js/lib/moment.min.js"></script>
+        <script src="assets/js/lib/jquery.min.js"></script>
+        <script src="assets/js/lib/popper.min.js"></script>
+        <script src="assets/js/bootstrap/bootstrap.min.js"></script>
+        <script src="assets/js/chosen-js/chosen.jquery.js"></script>
+        <script src="assets/js/custom.js">
+        </script>
+        <script>
+            var retrieveData = [];
+            var uniqueCountryList = []
 
-        // The number of datapoints
-        var n = 21;
-        // 5. X scale will use the index of our data
-        var xScale = d3.scaleLinear()
-                .domain([0, n - 1]) // input
-                .range([0, width]); // output
+            $(document).ready(function () {
+                $.ajax({
+                    url: "data/processedASEANTotal.csv",
+                    success: function (data) {
+                        dataArr = data.split("|")
+                        for (i = 1; i < dataArr.length - 1; i++) { //dataArr.length
+                            retrieveData.push(dataArr[i].split("#"))
+                            if (!uniqueCountryList.includes(dataArr[i].split("#")[2].trim())) {
+                                uniqueCountryList.push(dataArr[i].split("#")[2].trim());
+                            }
+                        }
 
-        // 6. Y scale will use the randomly generate number 
-        var yScale = d3.scaleLinear()
-                .domain([0, 1]) // input 
-                .range([height, 0]); // output 
+                        for (i = 0; i < uniqueCountryList.length; i++) {
+                            select = document.getElementById("countryList")
+                            option = document.createElement("option")
+                            option.setAttribute("value", uniqueCountryList[i])
+                            option.innerText = uniqueCountryList[i].split("\[")[0].trim()
+                            select.appendChild(option)
+                        }
+                    },
+                });
+            })
 
-        // 7. d3's line generator
-        var line = d3.line()
-                .x(function(d, i) { return xScale(i);
-                }) // set the x values for the line generator
-                .y(function(d) { return yScale(d.y);
-                }) // set the y values for the line generator 
-                .curve(d3.curveMonotoneX) // apply smoothing to the line
+            function loadChart() {
+                type = document.getElementById("type").value
+                countrySelected = []
+                traceList = []
+                dict = {x: [], y: [], mode: 'lines+markers'}
+                countryCurr = ""
+                typeCurr = ""
 
-                // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
-                var dataset = d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
+                for (i = 0; i < document.getElementsByName("countrySelection")[0].length; i++) {
+                    if (document.getElementsByName("countrySelection")[0][i].selected === true) {
+                        countrySelected.push(document.getElementsByName("countrySelection")[0][i].value)
+                    }
+                }
 
-                // 1. Add the SVG to the page and employ #2
-                var svg = d3.select("#container").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        // 3. Call the x axis in a group tag
-        svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+                for (i = 0; i < retrieveData.length; i++) {
+                    if (type === "All") {
+                        if (countrySelected.includes(retrieveData[i][2].trim())) {
+                            if (countryCurr === "" || typeCurr === "") {
+                                countryCurr = retrieveData[i][2].trim()
+                                typeCurr = retrieveData[i][1].trim()
+                                dict['x'].push(retrieveData[i][0].trim())
+                                dict['y'].push(retrieveData[i][4].trim())
+                            } else if (countryCurr === retrieveData[i][2].trim()) {
+                                dict['x'].push(retrieveData[i][0].trim())
+                                dict['y'].push(retrieveData[i][4].trim())
 
-        // 4. Call the y axis in a group tag
-        svg.append("g")
-                .attr("class", "y axis")
-                .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+                                if (i !== retrieveData.length - 1 && (retrieveData[i + 1][1].trim() !== typeCurr || countryCurr !== retrieveData[i + 1][2].trim())) {
+                                    dict['name'] = countryCurr.split("\[")[0].trim() + " (" + typeCurr + ")"
+                                    traceList.push(dict)
+                                    dict = {x: [], y: [], mode: 'lines+markers'}
+                                    typeCurr = ""
+                                    countryCurr = ""
+                                } else if (i === retrieveData.length - 1) {
+                                    traceList.push(dict)
+                                }
+                                console.log(dict)
+                            }
+                        }
+                    } else {
+                        if (retrieveData[i][1] === type && countrySelected.includes(retrieveData[i][2].trim())) {
+                            if (countryCurr === "") {
+                                countryCurr = retrieveData[i][2].trim()
+                                dict['x'].push(retrieveData[i][0].trim())
+                                dict['y'].push(retrieveData[i][4].trim())
+                            } else if (countryCurr === retrieveData[i][2].trim()) {
+                                dict['x'].push(retrieveData[i][0].trim())
+                                dict['y'].push(retrieveData[i][4].trim())
 
-        // 9. Append the path, bind the data, and call the line generator 
-        svg.append("path")
-                .datum(dataset) // 10. Binds data to the line 
-                .attr("class", "line") // Assign a class for styling 
-                .attr("d", line); // 11. Calls the line generator 
+                                // first part condition check for export, second part condition for import
+                                if ((i !== retrieveData.length - 1 && retrieveData[i + 1][1].trim() !== type) || (i !== retrieveData.length - 1 && retrieveData[i + 1][2].trim() !== countryCurr)) {
+                                    dict['name'] = countryCurr.split("\[")[0].trim()
+                                    traceList.push(dict)
+                                    dict = {x: [], y: [], mode: 'lines+markers'}
+                                    if (retrieveData[i + 1][1] === type && countrySelected.includes(retrieveData[i + 1][2].trim())) {
+                                        countryCurr = retrieveData[i][2].trim()
+                                        dict['x'].push(retrieveData[i][0].trim())
+                                        dict['y'].push(retrieveData[i][4].trim())
+                                    } else {
+                                        countryCurr = ""
+                                    }
+                                } else if (i === retrieveData.length - 1) {
+                                    traceList.push(dict)
+                                }
+                                console.log(dict)
+                            }
+                        }
+                    }
+                }
 
-        // 12. Appends a circle for each datapoint 
-        svg.selectAll(".dot")
-                .data(dataset)
-                .enter().append("circle") // Uses the enter().append() method
-                .attr("class", "dot") // Assign a class for styling
-                .attr("cx", function(d, i) {
-                return xScale(i)
-                })
-                .attr("cy", function(d) { return yScale(d.y)
-                })
-                .attr("r", 5)
-                .on("mouseover", function(a, b, c) {
-                console.log(a)
-                        this.attr('class', 'focus')
-                })
-                .on("mouseout", function() {  })
-                //       .on("mousemove", mousemove);
+                generateChart(traceList)
+            }
 
-                //   var focus = svg.append("g")
-                //       .attr("class", "focus")
-                //       .style("display", "none");
+            function generateChart(traceList) {
+                var data = traceList;
 
-                //   focus.append("circle")
-                //       .attr("r", 4.5);
+                var layout = {
+                    title: 'ASEAN Trade Data',
+                    xaxis: {
+                        title: 'Year',
+                        range: [2013, 2017],
+                        dtick: 1,
+                    },
+                    yaxis: {
+                        title: 'Amount of Trades'
+                    }
+                };
 
-                //   focus.append("text")
-                //       .attr("x", 9)
-                //       .attr("dy", ".35em");
-
-                //   svg.append("rect")
-                //       .attr("class", "overlay")
-                //       .attr("width", width)
-                //       .attr("height", height)
-                //       .on("mouseover", function() { focus.style("display", null); })
-                //       .on("mouseout", function() { focus.style("display", "none"); })
-                //       .on("mousemove", mousemove);
-
-                //   function mousemove() {
-//     var x0 = x.invert(d3.mouse(this)[0]),
-//         i = bisectDate(data, x0, 1),
-//         d0 = data[i - 1],
-//         d1 = data[i],
-//         d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-//     focus.attr("transform", "translate(" + x(d.date) + "," + y(d.close) + ")");
-//     focus.select("text").text(d);
-//   }
-    </script>
-</body>
+                Plotly.newPlot('container', data, layout, {displayModeBar: false});
+            }
+        </script>
+    </body>
 </html>
