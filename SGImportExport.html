@@ -42,7 +42,7 @@
             #explanation {
                 position: absolute;
                 top: 165px;
-                left: 470px;
+                left: 425px;
                 width: 160px;
                 text-align: center;
                 color: #666;
@@ -118,8 +118,9 @@
                     <ul>
                         <li class=""><a href="index.html" title="Dashboard"><span class="nav-icon material-icons">public</span> Home </a></li>
                         <li class="active"><a href="SGImportExport.html"><span class="nav-icon material-icons "> card_travel </span> SG Trades </a></li>
-                        <li class=""><a href="ASEANTrades.html"><span class="nav-icon material-icons ">score</span> ASEAN Trades </a></li>
-                        <li class=""><a href="SGTrade.html"><span class="nav-icon material-icons ">score</span> SG Trade </a></li>
+                        <li class=""><a href="ASEANTrades.html"><span class="nav-icon material-icons ">laptop_mac</span> ASEAN Trades </a></li>
+                        <li class=""><a href="SGTrade.html"><span class="nav-icon material-icons ">multiline_chart</span> SG Trade </a></li>
+                        <li class=""><a href="SGCountry.html"><span class="nav-icon material-icons ">language</span> SG Country </a></li>
                     </ul>
                 </nav>
 
@@ -131,9 +132,6 @@
                     <nav class="navbar px-sm-4 navbar-light bg-white">
                         <a class="navbar-brand py-2 d-md-none  m-0 material-icons toggle-sidebar" href="#">menu</a>
                         <ul class="navbar-nav flex-row ml-auto">
-                            <li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="Switch Application">
-                                <a data-toggle="modal" href="#" data-target="#switchApp" class="nav-link"><span class="material-icons align-middle">apps</span></a>
-                            </li>
                             <li class="nav-item ml-sm-3 user-logedin dropdown">
                                 <a href="https://wiki.smu.edu.sg/18191is428g1/UserImport/UserExport" target="_blank" class="nav-link weight-400"><img src="image/250px-UIUXLogo.png" class="mr-2 rounded" width="28"> User Export / User Import</a>
                             </li>
@@ -143,26 +141,28 @@
 
                 <div class="content-wrapper">
                     <div class="row">
-                        <div class='col-sm-3'>
-                            <h1 class="weight-300 h3 title"> SG Trade </h1>
+                        <div class='col-sm-12'>
+                            <h1 class="weight-300 h3 title text-center"> Distribution of Merchandise / Service </h1>
                         </div>
-                        <div class='col-sm-9'>
-                            <div class='row'>
-                                <div class="col-sm-3">
-                                    <input type="range" min="2013" max="2017" value="2017" class="slider" id="yearSelection" onchange='loadChart()'>
-                                </div>
-                                <div class="col-sm-1">
-                                    <div id="years"></div>
-                                </div>
-                                <label class="label-control col-sm-1"> Type: </label>
-                                <select class="form-control col-sm-2" id="typeSelection" onchange='loadChart()'>
-                                    <option value="merchandise"> Merchandise </option>
-                                    <option value="service"> Service </option>
-                                </select>
-                                <div class="col-sm-1"></div>
+                    </div>
+                    <div class='row'>
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-1">
+                                <label class="label-group"> Year: </label>
                             </div>
+                        <div class="col-sm-2">
+                            <input type="range" min="2013" max="2017" value="2017" class="slider" id="yearSelection" onchange='loadChart()'>
                         </div>
-                    </div> 
+                        <div class="col-sm-1">
+                            <div id="years"></div>
+                        </div>
+                        <label class="label-control col-sm-1"> Type: </label>
+                        <select class="form-control col-sm-2" id="typeSelection" onchange='loadChart()'>
+                            <option value="merchandise"> Merchandise </option>
+                            <option value="service"> Service </option>
+                        </select>
+                        <div class="col-sm-3"></div>
+                    </div>
 
                     <div class="content">
                         <div class="row">
@@ -208,69 +208,6 @@
             </div>
         </section>
 
-        <div class="modal fade" id="switchApp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header px-4">
-                        <h5 class="modal-title" id="exampleModalLabel">Select Application</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span class="material-icons ">close</span>
-                        </button>
-                    </div>
-                    <div class="modal-body p-4">
-
-                        <div class="row align-items-stretch app-switcher">
-                            <div class="col-lg-3 col-6 mb-4">
-                                <a href="index.html" class="text-dark">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <span class="material-icons md-48 " style="color:#21C3E0;">bubble_chart</span>
-                                            <p class="weight-400 m-0">Dashboard</p>
-                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-3 col-6 mb-4">
-                                <a href="ecommerce-dashboard.html" class="text-dark">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <span class="material-icons md-48 text-primary">security</span>
-                                            <p class="weight-400 m-0">Ecommerce</p>
-                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-3 col-6 mb-4">
-                                <a href="mailbox.html" class="text-dark">
-                                    <div class="card h-100 active-app">
-                                        <div class="card-body text-center">
-                                            <span class="material-icons md-48 text-danger">blur_on</span>
-                                            <p class="weight-400 m-0">Mail Box</p>
-                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                            <span class="material-icons app-selected md-16">check</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-3 col-6 mb-4">
-                                <a href="blogger-feed-list.html" class="text-dark">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <span class="material-icons md-48 text-warning">camera</span>
-                                            <p class="weight-400 m-0">Blogger</p>
-                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <script src="assets/js/lib/moment.min.js"></script>
         <script src="assets/js/lib/jquery.min.js"></script>
         <script src="assets/js/lib/popper.min.js"></script>
@@ -298,7 +235,7 @@
             }
 
             // Dimensions of sunburst.
-            var width = 1100;
+            var width = 1000;
             var height = 450;
             var radius = Math.min(width, height) / 2;
 
@@ -445,11 +382,14 @@
                     secondDepth = ""
                     thirdDepth = ""
                     document.getElementById("printTypeOfTrade").innerText = d.data["name"]
+                    document.getElementById("printImportExport").innerText = ""
+                    document.getElementById("printTradedItem").innerText =""
                     document.getElementById("explanation").innerHTML = "<span id='percentage'></span><br/> is made up of <b>" + firstDepth + "</b>"
                 } else if (d.depth === 2) {
                     secondDepth = d.data["name"]
                     thirdDepth = ""
                     document.getElementById("printImportExport").innerText = d.data["name"]
+                    document.getElementById("printTradedItem").innerText = ""
                     document.getElementById("explanation").innerHTML = "<span id='percentage'></span><br/> of <b>" + firstDepth + "</b> is made up of <b>" + secondDepth + "</b>"
                 } else if (d.depth === 3) {
                     if (d.data["name"].length > 20) {
