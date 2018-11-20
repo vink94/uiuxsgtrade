@@ -16,20 +16,153 @@
         <script src="http://d3js.org/d3.v3.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
         <style>
-            .group text {
-                font: 11px sans-serif;
-                pointer-events: none;
+            /*
+            .dependencyWheel {
+                font: 10px sans-serif;
+            }*/
+            #circle circle {
+                fill: none;
+                pointer-events: all;
             }
-
-            .group path {
-                stroke: #000;
-            }
-
             path.chord {
-                stroke-width: .75;
-                fill-opacity: .75;
+                stroke: #000;
+                stroke-width: .10px;
+                transition: opacity 0.3s;
+            }
+            #circle:hover path.fade {
+                opacity: 0;
             }
 
+            /*text is regions name only on chord diagram and scroll text*/
+            text {
+                fill: black;
+                font-family: Arial Narrow,Arial,sans-serif;
+                text-align: center;
+                font-size: 14px;
+            }
+            .current{
+                background-color: white;
+                color: black;
+                font-size : 16px;
+                font-family: Arial Narrow,Arial,sans-serif;
+                border-color: black;
+                border-radius: 2em;
+            }
+
+            #legend {/*regions*/
+                float:left;
+                font-size: 14px;
+                width: 215px;
+            } 
+            /*regions as well*/
+            table.table1{
+
+            }    
+            /*countries*/
+            table.table2 {
+                position: absolute;
+                top:180px;
+                left:1050px;
+                white-space: nowrap;
+                border-collapse: collapse;
+                display: none;
+            }
+            table.table2 td {
+                font-family: verdana;
+                font-size: 14px;
+                float: left;
+            }
+            .link {
+                margin-left: 30px;
+                width:300px;
+                height:50px;
+                float: left;
+            }
+            .scroll {
+                position:absolute; /*on top of vis*/
+                top:0;
+                left:0px;
+            }
+            .scroll2 {
+                float:left;
+            }
+            /* unvisited link */
+            a.one:link {
+                color:  #3CBCBC;
+                text-decoration: none;
+            }
+
+            /* visited link */
+            a.one:visited {
+                color: #54C571;
+            }
+
+            /* mouse over link */
+            a.one:hover {
+                color: #736AFF;
+            }
+
+            /* selected link */
+            a.one:active {
+                color: #3CBCBC;
+            }
+            /*this are the links to the table not to other pages*/
+            /* mouse over link */
+            a.two:hover + table {
+                display: table;
+                color: black;
+            }
+            /* unvisited link */
+            a.two:link {
+                font-family: verdana;
+                color: black;
+                text-decoration: none;
+            }
+            /* visited link */
+            a.two:visited {
+                font-family: verdana;
+                color: black;
+            }
+            /* mouse over link */
+            a.two:hover {
+                font-family: verdana;
+                color: gray;
+            }
+            /* selected link */
+            a.two:active {
+                font-family: verdana;
+                color: black;
+            }   
+
+            .slider {
+                -webkit-appearance: none;
+                width: 100%;
+                height: 15px;
+                border-radius: 5px;   
+                background: #d3d3d3;
+                outline: none;
+                opacity: 0.7;
+                -webkit-transition: .2s;
+                transition: opacity .2s;
+            }
+
+            .slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%; 
+                background: #FF6A00;
+                cursor: pointer;
+            }
+
+            .slider::-moz-range-thumb {
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                background: #FF6A00;
+                cursor: pointer;
+            }
         </style>
     </head>
 
@@ -66,8 +199,9 @@
                     <ul>
                         <li class=""><a href="index.html" title="Dashboard"><span class="nav-icon material-icons">public</span> Home </a></li>
                         <li class=""><a href="SGImportExport.html"><span class="nav-icon material-icons "> card_travel </span> SG Trades </a></li>
-                        <li class=""><a href="ASEANTrades.html"><span class="nav-icon material-icons ">score</span> ASEAN Trades </a></li>
-                        <li class="active"><a href="SGTrade.html"><span class="nav-icon material-icons ">score</span> SG Trade </a></li>
+                        <li class=""><a href="ASEANTrades.html"><span class="nav-icon material-icons ">laptop_mac</span> ASEAN Trades </a></li>
+                        <li class=""><a href="SGTrade.html"><span class="nav-icon material-icons ">multiline_chart</span> SG Trade </a></li>
+                        <li class="active"><a href="SGCountry.html"><span class="nav-icon material-icons ">language</span> SG Country </a></li>
                     </ul>
                 </nav>
 
@@ -79,9 +213,6 @@
                     <nav class="navbar px-sm-4 navbar-light bg-white">
                         <a class="navbar-brand py-2 d-md-none  m-0 material-icons toggle-sidebar" href="#">menu</a>
                         <ul class="navbar-nav flex-row ml-auto">
-                            <li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="Switch Application">
-                                <a data-toggle="modal" href="#" data-target="#switchApp" class="nav-link"><span class="material-icons align-middle">apps</span></a>
-                            </li>
                             <li class="nav-item ml-sm-3 user-logedin dropdown">
                                 <a href="https://wiki.smu.edu.sg/18191is428g1/UserImport/UserExport" target="_blank" class="nav-link weight-400"><img src="image/250px-UIUXLogo.png" class="mr-2 rounded" width="28"> User Export / User Import</a>
                             </li>
@@ -99,6 +230,17 @@
 
                     <div class="content">
                         <div class="form-group row">
+                            <div class="col-sm-1">
+                                <label class="label-group"> Year: </label>
+                            </div>
+                            <div class="col-sm-3">
+                                <input type="range" min="2000" max="2017" value="2017" class="slider" id="yearSelection" onchange='loadChart()'>
+                            </div>
+                            <div class="col-sm-1">
+                                <div id="years"></div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-sm-12">
                                 <div id="container"></div>
                             </div>
@@ -107,69 +249,6 @@
                 </div>
             </div>
         </section>
-
-        <div class="modal fade" id="switchApp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header px-4">
-                        <h5 class="modal-title" id="exampleModalLabel">Select Application</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span class="material-icons ">close</span>
-                        </button>
-                    </div>
-                    <div class="modal-body p-4">
-
-                        <div class="row align-items-stretch app-switcher">
-                            <div class="col-lg-3 col-6 mb-4">
-                                <a href="index.html" class="text-dark">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <span class="material-icons md-48 " style="color:#21C3E0;">bubble_chart</span>
-                                            <p class="weight-400 m-0">Dashboard</p>
-                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-3 col-6 mb-4">
-                                <a href="ecommerce-dashboard.html" class="text-dark">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <span class="material-icons md-48 text-primary">security</span>
-                                            <p class="weight-400 m-0">Ecommerce</p>
-                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-3 col-6 mb-4">
-                                <a href="mailbox.html" class="text-dark">
-                                    <div class="card h-100 active-app">
-                                        <div class="card-body text-center">
-                                            <span class="material-icons md-48 text-danger">blur_on</span>
-                                            <p class="weight-400 m-0">Mail Box</p>
-                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                            <span class="material-icons app-selected md-16">check</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-3 col-6 mb-4">
-                                <a href="blogger-feed-list.html" class="text-dark">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <span class="material-icons md-48 text-warning">camera</span>
-                                            <p class="weight-400 m-0">Blogger</p>
-                                            <small class="weight-300 text-muted">This is some text within a card body.</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <script src="assets/js/lib/moment.min.js"></script>
         <script src="assets/js/lib/jquery.min.js"></script>
@@ -182,64 +261,135 @@
             var importDataStorage = {}
             var exportDataStorage = {}
             var countryList = []
+            var countryStorage = []
+
+            var slider = document.getElementById("yearSelection");
+            var output = document.getElementById("years");
+            output.innerHTML = slider.value; // Display the default slider value
+
+            // Update the current slider value (each time you drag the slider handle)
+            slider.oninput = function () {
+                output.innerHTML = this.value;
+            }
 
             $(document).ready(function () {
                 $.ajax({
                     url: "data/processedImportData.csv",
+                    cache: false,
                     success: function (response) {
-                        for (i = 1; i < response.split("|").length; i++) {
+                        for (i = 1; i < response.split("|").length - 1; i++) {
+                            importDataStorage[response.split("|")[i].split("\t")[18].split("\(")[0].trim()] = response.split("|")[i].split("\t")
                             dict = {}
-                            for (y = 0; y < response.split("|")[i].split("\t").length - 1; y++) {
-                                dict[response.split("|")[0].split("\t")[y]] = parseFloat(response.split("|")[i].split("\t")[y])
-                            }
-                            countryList.push(response.split("|")[i].split("\t")[18])
-                            importDataStorage[response.split("|")[i].split("\t")[18]] = dict
+                            dict["name"] = response.split("|")[i].split("\t")[18].split("\(")[0].trim()
+                            dict["color"] = getRandomColor()
+                            countryStorage.push(dict)
+                            countryList.push(response.split("|")[i].split("\t")[18].split("\(")[0].trim())
                         }
                     }
                 })
 
                 $.ajax({
                     url: "data/processedExportData.csv",
+                    cache: false,
                     success: function (response) {
-                        for (i = 1; i < response.split("|").length; i++) {
-                            dict = {}
-                            for (y = 0; y < response[i].split("\t").length - 1; y++) {
-                                dict[response.split("|")[0].split("\t")[y]] = parseFloat(response.split("|")[i].split("\t")[y])
-                            }
-                            exportDataStorage[response.split("|")[i].split("\t")[18]] = dict
+                        for (i = 1; i < response.split("|").length - 1; i++) {
+                            exportDataStorage[response.split("|")[i].split("\t")[18].split("\(")[0].trim()] = response.split("|")[i].split("\t")
                         }
                     }
                 })
+
+                dict = {}
+                dict["name"] = "Singapore"
+                dict["color"] = getRandomColor()
+                countryStorage.push(dict)
+
                 countryList.pop()
                 countryList.push("Singapore")
-
-                setTimeout(function() {
-                    processData(2000)
-                }, 1000)
-                
             })
 
-            function processData(year) {
-                finalMatrix = []
-                for (c = 0; c < countryList.length; c++) {
-                    list = []
-                    for (c = 0; c < countryList.length; c++) {
-                        list.push(0)
-                    }
-                    
+            function loadChart() {
+                year = parseInt(document.getElementById("yearSelection").value)
+                var finalMatrix = []
+                list = [0]
+                countryStorageDuplicate = []
+                
+                for (i = 0; i < countryList.length; i++) {
+                    list.push(0)
+                }
+
+                for (c = 1; c < countryList.length; c++) {
                     if (importDataStorage[countryList[c]] !== undefined) {
-                        list[countryList.indexOf(countryList[c])] = importDataStorage[countryList[c]][year]
-                        finalMatrix.push.apply(list)
+                        listDuplicate = list.slice()
+                        if (importDataStorage[countryList[c]][year - 2000] === undefined) {
+                            listDuplicate[0] = 0 
+                        } else {
+                            listDuplicate[0] = parseFloat(importDataStorage[countryList[c]][year - 2000]) 
+                        }
+                        finalMatrix[countryList.indexOf(countryList[c])] = listDuplicate
                     }
                 }
-                console.log(finalMatrix)
+                finalMatrix[0] = list
+                
+                for (c = 1; c < countryList.length; c++) {
+                    if (exportDataStorage[countryList[c]] !== undefined) {
+                        if (exportDataStorage[countryList[c]][year - 2000] !== undefined) {
+                            finalMatrix[0][countryList.indexOf(countryList[c])] = parseFloat(exportDataStorage[countryList[c]][year - 2000])
+                        } else {
+                            finalMatrix[0][countryList.indexOf(countryList[c])] = 0
+                        }
+                    }
+                }
+                
+                updateChords(finalMatrix, countryStorage)
+            }
+
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            function processData(year) {
+                list = []
+                for (c = 0; c < countryList.length; c++) {
+                    list.push(0)
+                }
+
+                finalMatrix = []
+                for (c = 0; c < countryList.length; c++) {
+                    finalMatrix.push(list)
+                }
+
+                for (c = 0; c < countryList.length; c++) {
+                    if (importDataStorage[countryList[c]] !== undefined) {
+                        listDuplicate = list.slice()
+                        if (importDataStorage[countryList[c]][year] === undefined) {
+                            listDuplicate[countryList.indexOf(countryList[c])] = 0
+                        } else {
+                            listDuplicate[countryList.indexOf(countryList[c])] = importDataStorage[countryList[c]][year]
+                        }
+                        finalMatrix[countryList.indexOf(countryList[c])] = listDuplicate
+                    }
+
+                    if (exportDataStorage[countryList[c]] !== undefined) {
+                        if (exportDataStorage[countryList[c]][year] !== undefined) {
+                            finalMatrix[0][countryList.indexOf(countryList[c])] = exportDataStorage[countryList[c]][year]
+                        } else {
+                            finalMatrix[0][countryList.indexOf(countryList[c])] = 0
+                        }
+                    }
+                }
+                updateChords(finalMatrix, countryStorage)
             }
         </script>
         <script>
             /*** Define parameters and tools ***/
-            var width = 760,
-                    height = 650,
-                    outerRadius = Math.min(width, height) / 2 - 120, //100,
+            var width = 800,
+                    height = 500,
+                    outerRadius = Math.min(width, height) / 2 - 100, //100,
                     innerRadius = outerRadius - 10;
 
             //string url for the initial data set
@@ -255,14 +405,14 @@
                     .innerRadius(innerRadius)
                     .outerRadius(outerRadius);
 
-//create the chord path data generator for the chords
+            //create the chord path data generator for the chords
             var path = d3.svg.chord()
                     .radius(innerRadius - 4);// subtracted 4 to separate the ribbon
 
-//define the default chord layout parameters
-//within a function that returns a new layout object;
-//that way, you can create multiple chord layouts
-//that are the same except for the data.
+            //define the default chord layout parameters
+            //within a function that returns a new layout object;
+            //that way, you can create multiple chord layouts
+            //that are the same except for the data.
             function getDefaultLayout() {
                 return d3.layout.chord()
                         .padding(0.03)
@@ -270,7 +420,7 @@
                         .sortChords(d3.ascending);
             }
             var last_layout; //store layout between updates
-            var regions; //store neighbourhood data outside data-reading function
+            //var countryList; //store neighbourhood data outside data-reading function
 
             /*** Initialize the visualization ***/
             var g = d3.select("#container").append("svg")
@@ -280,26 +430,24 @@
                     .attr("id", "circle")
                     .attr("transform",
                             "translate(" + width / 2 + "," + height / 2 + ")");
-//the entire graphic will be drawn within this <g> element,
-//so all coordinates will be relative to the center of the circle
-
+            //the entire graphic will be drawn within this <g> element,
+            //so all coordinates will be relative to the center of the circle
+            
             g.append("circle")
                     .attr("r", outerRadius);
-//this circle is set in CSS to be transparent but to respond to mouse events
-//It will ensure that the <g> responds to all mouse events within
-//the area, even after chords are faded out.
+            //this circle is set in CSS to be transparent but to respond to mouse events
+            //It will ensure that the <g> responds to all mouse events within
+            //the area, even after chords are faded out.
 
             /*** Read in the neighbourhoods data and update with initial data matrix ***/
-//normally this would be done with file-reading functions
-//d3. and d3.json and callbacks, 
-//instead we're using the string-parsing functions
-//d3.csv.parse and JSON.parse, both of which return the data,
-//no callbacks required. 
-
-            //updateChords("2013")
+            //normally this would be done with file-reading functions
+            //d3. and d3.json and callbacks, 
+            //instead we're using the string-parsing functions
+            //d3.csv.parse and JSON.parse, both of which return the data,
+            //no callbacks required. 
 
             /* Create OR update a chord layout from a data matrix */
-            function updateChords(matrix) {
+            function updateChords(matrix, countryStorage) {
                 /* Compute chord layout. */
                 layout = getDefaultLayout(); //create a new layout object
                 layout.matrix(matrix);
@@ -328,12 +476,13 @@
                 newGroups.append("title");
 
                 //Update the (tooltip) title text based on the data
-                groupG.select("title")
-                        .text(function (d, i) {
-                            return numberWithCommas(d.value)
-                                    + " x (10\u00B3) in USD exports from "
-                                    + regions[i].name;
-                        });
+                /*
+                 groupG.select("title")
+                 .text(function (d, i) {
+                 return numberWithCommas(d.value)
+                 + " x (10\u00B3) in USD exports from "
+                 + countryStorage[i].name;
+                 });*/
 
                 //create the arc paths and set the constant attributes
                 //(those based on the group index, not on the value)
@@ -344,16 +493,16 @@
                             //even if groups are sorted
                         })
                         .style("fill", function (d) {
-                            return regions[d.index].color;
+                            return countryStorage[d.index].color;
                         });
 
                 //update the paths to match the layout
                 groupG.select("path")
                         .transition()
                         .duration(1500)
-                        //.attr("opacity", 0.5) //optional, just to observe the transition////////////
+                        .attr("opacity", 0.5) //optional, just to observe the transition////////////
                         .attrTween("d", arcTween(last_layout))
-                        // .transition().duration(100).attr("opacity", 1) //reset opacity//////////////
+                        .transition().duration(100).attr("opacity", 1) //reset opacity//////////////
                         ;
 
                 //create the group labels
@@ -364,7 +513,7 @@
                         .attr("dy", ".35em")
                         .attr("color", "#fff")
                         .text(function (d) {
-                            return regions[d.index].name;
+                            return countryStorage[d.index].name;
                         });
 
                 //position group labels to match layout
@@ -403,18 +552,18 @@
                 // Update all chord title texts
                 chordPaths.select("title")
                         .text(function (d) {
-                            if (regions[d.target.index].name !== regions[d.source.index].name) {
-                                return [numberWithCommas(d.source.value),
+                            if (countryStorage[d.target.index].name !== countryStorage[d.source.index].name) {
+                                return "US$ " + [numberWithCommas(d.source.value),
                                     " exports from ",
-                                    regions[d.source.index].name,
+                                    countryStorage[d.source.index].name,
                                     " to ",
-                                    regions[d.target.index].name,
+                                    countryStorage[d.target.index].name,
                                     "\n",
-                                    numberWithCommas(d.target.value),
+                                    "US$ " + numberWithCommas(d.target.value),
                                     " exports from ",
-                                    regions[d.target.index].name,
+                                    countryStorage[d.target.index].name,
                                     " to ",
-                                    regions[d.source.index].name
+                                    countryStorage[d.source.index].name
                                 ].join("");
                                 //joining an array of many strings is faster than
                                 //repeated calls to the '+' operator, 
@@ -422,7 +571,7 @@
                             } else { //source and target are the same
                                 return numberWithCommas(d.source.value)
                                         + " exports ended in "
-                                        + regions[d.source.index].name;
+                                        + countryStorage[d.source.index].name;
                             }
                         });
 
@@ -435,12 +584,12 @@
                 //update the path shape
                 chordPaths.transition()
                         .duration(1500)
-                        //.attr("opacity", 0.5) //optional, just to observe the transition
+                        .attr("opacity", 0.5) //optional, just to observe the transition
                         .style("fill", function (d) {
-                            return regions[d.source.index].color;
+                            return countryStorage[d.source.index].color;
                         })
                         .attrTween("d", chordTween(last_layout))
-                        //.transition().duration(100).attr("opacity", 1) //reset opacity
+                        .transition().duration(100).attr("opacity", 1) //reset opacity
                         ;
 
                 //add the mouseover/fade out behaviour to the groups
@@ -455,14 +604,14 @@
                 });
                 //the "unfade" is handled with CSS :hover class on g#circle
                 //you could also do it using a mouseout event:
-                /*
-                 g.on("mouseout", function() {
-                 if (this == g.node() )
-                 //only respond to mouseout of the entire circle
-                 //not mouseout events for sub-components
-                 chordPaths.classed("fade", false);
-                 });
-                 */
+
+                g.on("mouseout", function () {
+                    if (this == g.node())
+                        //only respond to mouseout of the entire circle
+                        //not mouseout events for sub-components
+                        chordPaths.classed("fade", false);
+                });
+
 
                 last_layout = layout; //save for next update
             }
@@ -543,8 +692,7 @@
 
                         tween = d3.interpolate(old, d);
                     } else {
-                        //create a zero-width chord object
-///////////////////////////////////////////////////////////in the copy ////////////////            
+                        //create a zero-width chord object          
                         if (oldLayout) {
                             var oldGroups = oldLayout.groups().filter(function (group) {
                                 return ((group.index == d.source.index) ||
@@ -564,8 +712,7 @@
                                 };
                             }
                         } else
-                            old = d;
-                        /////////////////////////////////////////////////////////////////               
+                            old = d;             
                         var emptyChord = {
                             source: {startAngle: old.source.startAngle,
                                 endAngle: old.source.startAngle},
@@ -581,17 +728,6 @@
                     };
                 };
             }
-
-            //updateChords("foursix.json");
-
-            /*
-             function disableButton(buttonNode) {
-             d3.selectAll("button")
-             .attr("disabled", function(d) {
-             return this === buttonNode? "true": null;
-             });
-             }
-             */
         </script>
     </body>
 </html>
