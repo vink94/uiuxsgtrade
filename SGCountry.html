@@ -242,7 +242,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-12">
-                                <div id="container"></div>
+                                <div id="container" class="float-right"></div>
                             </div>
                         </div>
                     </div>
@@ -312,7 +312,7 @@
                 var finalMatrix = []
                 list = [0]
                 countryStorageDuplicate = []
-                
+
                 for (i = 0; i < countryList.length; i++) {
                     list.push(0)
                 }
@@ -321,15 +321,15 @@
                     if (importDataStorage[countryList[c]] !== undefined) {
                         listDuplicate = list.slice()
                         if (importDataStorage[countryList[c]][year - 2000] === undefined) {
-                            listDuplicate[0] = 0 
+                            listDuplicate[0] = 0
                         } else {
-                            listDuplicate[0] = parseFloat(importDataStorage[countryList[c]][year - 2000]) 
+                            listDuplicate[0] = parseFloat(importDataStorage[countryList[c]][year - 2000])
                         }
                         finalMatrix[countryList.indexOf(countryList[c])] = listDuplicate
                     }
                 }
                 finalMatrix[0] = list
-                
+
                 for (c = 1; c < countryList.length; c++) {
                     if (exportDataStorage[countryList[c]] !== undefined) {
                         if (exportDataStorage[countryList[c]][year - 2000] !== undefined) {
@@ -339,7 +339,7 @@
                         }
                     }
                 }
-                
+
                 updateChords(finalMatrix, countryStorage)
             }
 
@@ -387,8 +387,8 @@
         </script>
         <script>
             /*** Define parameters and tools ***/
-            var width = 800,
-                    height = 500,
+            var width = 1000,
+                    height = 1000,
                     outerRadius = Math.min(width, height) / 2 - 100, //100,
                     innerRadius = outerRadius - 10;
 
@@ -432,7 +432,7 @@
                             "translate(" + width / 2 + "," + height / 2 + ")");
             //the entire graphic will be drawn within this <g> element,
             //so all coordinates will be relative to the center of the circle
-            
+
             g.append("circle")
                     .attr("r", outerRadius);
             //this circle is set in CSS to be transparent but to respond to mouse events
@@ -445,9 +445,9 @@
             //instead we're using the string-parsing functions
             //d3.csv.parse and JSON.parse, both of which return the data,
             //no callbacks required. 
-
+            
             /* Create OR update a chord layout from a data matrix */
-            function updateChords(matrix, countryStorage) {
+            function updateChords(matrix, storage) {
                 /* Compute chord layout. */
                 layout = getDefaultLayout(); //create a new layout object
                 layout.matrix(matrix);
@@ -459,12 +459,13 @@
                             //use a key function in case the 
                             //groups are sorted differently 
                         });
-
+                        
                 groupG.exit()
                         .transition()
                         .duration(1500)
                         .attr("opacity", 0)
                         .remove(); //remove after transitions are complete
+
 
                 var newGroups = groupG.enter().append("g")
                         .attr("class", "group");
@@ -476,13 +477,13 @@
                 newGroups.append("title");
 
                 //Update the (tooltip) title text based on the data
-                /*
-                 groupG.select("title")
-                 .text(function (d, i) {
-                 return numberWithCommas(d.value)
-                 + " x (10\u00B3) in USD exports from "
-                 + countryStorage[i].name;
-                 });*/
+
+                groupG.select("title")
+                        .text(function (d, i) {
+                            return "USD$ " + numberWithCommas(d.value)
+                                    + " exports from "
+                                    + storage[i].name;
+                        });
 
                 //create the arc paths and set the constant attributes
                 //(those based on the group index, not on the value)
@@ -493,7 +494,7 @@
                             //even if groups are sorted
                         })
                         .style("fill", function (d) {
-                            return countryStorage[d.index].color;
+                            return storage[d.index].color;
                         });
 
                 //update the paths to match the layout
@@ -513,7 +514,7 @@
                         .attr("dy", ".35em")
                         .attr("color", "#fff")
                         .text(function (d) {
-                            return countryStorage[d.index].name;
+                            return storage[d.index].name;
                         });
 
                 //position group labels to match layout
@@ -531,7 +532,7 @@
                         })
                         .attr("text-anchor", function (d) {
                             return d.angle > Math.PI ? "end" : "begin";
-                        });
+                        })
 
 
                 /* Create/update the chord paths */
@@ -552,18 +553,18 @@
                 // Update all chord title texts
                 chordPaths.select("title")
                         .text(function (d) {
-                            if (countryStorage[d.target.index].name !== countryStorage[d.source.index].name) {
+                            if (storage[d.target.index].name !== storage[d.source.index].name) {
                                 return "US$ " + [numberWithCommas(d.source.value),
                                     " exports from ",
-                                    countryStorage[d.source.index].name,
+                                    storage[d.source.index].name,
                                     " to ",
-                                    countryStorage[d.target.index].name,
+                                    storage[d.target.index].name,
                                     "\n",
                                     "US$ " + numberWithCommas(d.target.value),
                                     " exports from ",
-                                    countryStorage[d.target.index].name,
+                                    storage[d.target.index].name,
                                     " to ",
-                                    countryStorage[d.source.index].name
+                                    storage[d.source.index].name
                                 ].join("");
                                 //joining an array of many strings is faster than
                                 //repeated calls to the '+' operator, 
@@ -571,7 +572,7 @@
                             } else { //source and target are the same
                                 return numberWithCommas(d.source.value)
                                         + " exports ended in "
-                                        + countryStorage[d.source.index].name;
+                                        + storage[d.source.index].name;
                             }
                         });
 
@@ -586,7 +587,7 @@
                         .duration(1500)
                         .attr("opacity", 0.5) //optional, just to observe the transition
                         .style("fill", function (d) {
-                            return countryStorage[d.source.index].color;
+                            return storage[d.source.index].color;
                         })
                         .attrTween("d", chordTween(last_layout))
                         .transition().duration(100).attr("opacity", 1) //reset opacity
@@ -712,7 +713,7 @@
                                 };
                             }
                         } else
-                            old = d;             
+                            old = d;
                         var emptyChord = {
                             source: {startAngle: old.source.startAngle,
                                 endAngle: old.source.startAngle},
