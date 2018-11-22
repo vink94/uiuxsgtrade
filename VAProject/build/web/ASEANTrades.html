@@ -574,7 +574,7 @@
                 target = target.concat(sourceExport.reverse())
                 value = value.concat(valueExport.reverse())
 
-                document.getElementById("title").innerText = "Distribution of Trade in Singapore by Top " + topk + " commodities in " + yearSelected
+                document.getElementById("title").innerHTML = "<b>Distribution of Trade in Singapore by Top " + topk + " commodities in " + yearSelected + "</b>"
                 generateSankey(yearSelected)
             }
 

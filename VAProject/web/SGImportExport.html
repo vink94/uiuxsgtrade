@@ -142,7 +142,7 @@
                 <div class="content-wrapper">
                     <div class="row">
                         <div class='col-sm-12'>
-                            <h1 class="weight-300 h3 title text-center"> Distribution of Merchandise / Service </h1>
+                            <h1 class="weight-300 h3 title text-center"><b>Distribution of Singapore Trade's by Merchandise/Service </b></h1>
                         </div>
                     </div>
                     <div class="row" style="height:20px;"></div>
@@ -217,6 +217,9 @@
         <script src="assets/js/custom.js">
         </script>
         <script>
+            $(document).ready(function(){
+                loadChart()
+            })
             var slider = document.getElementById("yearSelection");
             var output = document.getElementById("years");
             output.innerHTML = slider.value; // Display the default slider value

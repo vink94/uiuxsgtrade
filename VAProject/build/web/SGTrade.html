@@ -103,7 +103,7 @@
                     <div class="row page-tilte align-items-center">
                         <div class="col-md-12">
                             <a href="#" class="mt-3 d-md-none float-right toggle-controls"><span class="material-icons">keyboard_arrow_down</span></a>
-                            <h1 class="weight-300 h3 title text-center"> Trade trend between countries </h1>
+                            <h1 class="weight-300 h3 title text-center"> <b> Trade trend between countries </b></h1>
                         </div> 
                     </div> 
 
@@ -126,7 +126,7 @@
                                                     <select class="form-group" id="type" onchange='loadChart()'>
                                                         <option value="Import"> Import </option>
                                                         <option value="Export"> Export </option>
-                                                        <option value="All"> Both </option>
+                                                        <option value="All" selected="selected"> Both </option>
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-2">
@@ -173,11 +173,15 @@
                             select = document.getElementById("countryList")
                             option = document.createElement("option")
                             option.setAttribute("value", uniqueCountryList[i])
+                            if (uniqueCountryList[i].includes("WORLD")){
+                                option.selected = true
+                            }
                             option.innerText = uniqueCountryList[i].split("\[")[0].trim()
                             select.appendChild(option)
                         }
                     },
                 });
+                loadChart()
             })
 
             function loadChart() {
