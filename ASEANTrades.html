@@ -85,6 +85,7 @@
                         <li class="active"><a href="ASEANTrades.html"><span class="nav-icon material-icons ">laptop_mac</span> ASEAN Trades </a></li>
                         <li class=""><a href="SGTrade.html"><span class="nav-icon material-icons ">multiline_chart</span> SG Trade </a></li>
                         <li class=""><a href="SGCountry.html"><span class="nav-icon material-icons ">language</span> SG Country </a></li>
+                        <li class=""><a href="credit.html"><span class="nav-icon material-icons ">fingerprint</span> Credit </a></li>
                     </ul>
                 </nav>
 
@@ -110,10 +111,8 @@
                             <h1 class="weight-300 h3 title text-center" id="title"></h1>
                         </div> 
                     </div> 
-
                     <div class="content">
                         <div class="form-group row">
-                            <div class="col-sm-1"></div>
                             <div class="col-sm-1">
                                 <label class="label-group"> Year: </label>
                             </div>
@@ -129,13 +128,13 @@
                             <div class="col-sm-1">
                                 <input class="form-group" type="number" min="0" max="97" name="topk" id="topk" value="5" onchange="editField()"/>
                             </div>
-                            <div class="col-sm-1">
-                                <label class="label-group"> Partners: </label>
+                            <div class="col-sm-2">
+                                <label class="label-group"><button type="button" class="btn btn-info circle" data-toggle="tooltip" title="To select multiple: Window user hold down Ctrl and click on country. Mac User hold down Command and click on country">!</button> Partners: </label>
                             </div>
                             <div class="col-sm-1">
                                 <select name="countryList" multiple="" id="countryList" onclick="loadChart()"></select>
                             </div>
-                            <div class="col-sm-3"></div>
+                            <div class="col-sm-2"></div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
@@ -143,6 +142,9 @@
                             </div>
                         </div>
                     </div>
+                    <footer class="footer">
+                        <p class="text-muted m-0"><small class="float-right">Made by <a href="https://www.linkedin.com/in/ng-wei-en/">Ng Wei En</a>, <a href="https://www.linkedin.com/in/sherylyeoqinying/"> Sheryl Yeo </a> and <a href="https://www.linkedin.com/in/vincentk94/">Vincent Koh </a></small></p>
+                    </footer>
                 </div>
             </div>
         </section>
