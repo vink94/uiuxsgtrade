@@ -1,6 +1,6 @@
 # uiuxsgtrade
 
-SMU IS428 Visual Analytics project created by Wei En, Sheryl Yeo and Vincent Koh.
+SMU IS428 AY2017/18 Semester 1 Visual Analytics project created by Wei En, Sheryl Yeo and Vincent Koh.
 
 More on Project Details:
 https://wiki.smu.edu.sg/18191is428g1/UserImport/UserExport
