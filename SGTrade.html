@@ -130,8 +130,9 @@
                                                         <option value="All" selected="selected"> Both </option>
                                                     </select>
                                                 </div>
-                                                <div class="col-sm-2">
-                                                    <label class="label-control"><button type="button" class="btn btn-info circle" data-toggle="tooltip" title="To select multiple: Window user hold down Ctrl and click on country. Mac User hold down Command and click on country">!</button>  Countries Selection </label>
+                                                <div class="col-sm-2 row">
+                                                    <label class="label-group"><a href="#" data-toggle="tooltip" title="To select multiple: Window user hold down Ctrl and click on country. Mac User hold down Command and click on country"><i class="material-icons d-block mb-1">error_outline</i></a></label>
+                                                    <label class="label-group"> Top K: </label>
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <select name="countrySelection" class="col-sm-12" multiple="" id="countryList" onclick="loadChart()"></select>
@@ -167,6 +168,8 @@
             var uniqueCountryList = []
 
             $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip(); 
+                
                 $.ajax({
                     url: "data/processedASEANTotal.csv",
                     success: function (data) {

@@ -122,14 +122,15 @@
                             <div class="col-sm-1">
                                 <div id="years"></div>
                             </div>
-                            <div class="col-sm-1">
+                            <div class="col-sm-1 row">
+                                <label class="label-group"><a href="#" data-toggle="tooltip" title="To select multiple: Window user hold down Ctrl and click on country. Mac User hold down Command and click on country"><i class="material-icons d-block mb-1">error_outline</i></a></label>
                                 <label class="label-group"> Top K: </label>
                             </div>
                             <div class="col-sm-1">
                                 <input class="form-group" type="number" min="0" max="97" name="topk" id="topk" value="5" onchange="editField()"/>
                             </div>
                             <div class="col-sm-2">
-                                <label class="label-group"><button type="button" class="btn btn-info circle" data-toggle="tooltip" title="To select multiple: Window user hold down Ctrl and click on country. Mac User hold down Command and click on country">!</button> Partners: </label>
+                                <label class="label-group"> Partners: </label>
                             </div>
                             <div class="col-sm-1">
                                 <select name="countryList" multiple="" id="countryList" onclick="loadChart()"></select>
@@ -184,6 +185,8 @@
             }
 
             $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip(); 
+
                 $.ajax({
                     url: "data/processedASEANData.csv",
                     success: function (data) {
